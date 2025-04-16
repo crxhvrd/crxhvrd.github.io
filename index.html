@@ -326,6 +326,10 @@
   </style>
 
   <script>
+    // Переменные для хранения шаблонов контента
+    let corefxGalleryTemplate = "";
+    let homeTemplate = "";
+
     // Общие функции анимации
     function animateOut(element, callback) {
       element.classList.remove("fade-in");
@@ -353,23 +357,66 @@
       });
     }
 
-    // Функция маршрутизации. В зависимости от hash URL скрываются все секции и показывается нужная.
+    // Функция маршрутизации (router). В зависимости от hash URL показывается нужная секция.
     function routePage() {
       const hash = window.location.hash.substring(1).toLowerCase();
-      hideAllSections(["main-section", "corefx-section", "install-section", "faq-section"]);
+      
+      // Если мы покидаем секцию CoreFX, удаляем её галерею для освобождения памяти
+      if (hash !== "corefx") {
+        const corefxSection = document.getElementById("corefx-section");
+        if (corefxSection && corefxSection.style.display === "flex") {
+          const gallery = corefxSection.querySelector('.corefx-gallery');
+          if (gallery) {
+            if (!corefxGalleryTemplate) {
+              corefxGalleryTemplate = gallery.innerHTML;
+            }
+            gallery.innerHTML = "";
+          }
+        }
+      }
+      
+      // Если мы покидаем главную страницу, очищаем её содержимое (например, GIF)
+      if (hash !== "home") {
+        const homeSection = document.getElementById("main-section");
+        if (homeSection && homeSection.style.display === "flex") {
+          if (!homeTemplate) {
+            homeTemplate = homeSection.innerHTML;
+          }
+          homeSection.innerHTML = "";
+        }
+      }
 
+      // Скрываем все секции
+      hideAllSections(["main-section", "corefx-section", "install-section", "faq-section"]);
+      
+      // Определяем, какую секцию показать
       if (hash === "corefx") {
-        animateIn(document.getElementById("corefx-section"), "flex");
+        const corefxSection = document.getElementById("corefx-section");
+        const gallery = corefxSection.querySelector('.corefx-gallery');
+        if (gallery && gallery.innerHTML.trim() === "" && corefxGalleryTemplate) {
+          gallery.innerHTML = corefxGalleryTemplate;
+          initGallery();  // Переинициализируем галерею и установим обработчики
+        }
+        animateIn(corefxSection, "flex");
       } else if (hash === "installation" || hash === "install") {
         animateIn(document.getElementById("install-section"), "flex");
-        // По умолчанию показываем вкладку Legacy Singleplayer
         showTab("singleplayer");
       } else if (hash === "faq") {
         animateIn(document.getElementById("faq-section"), "flex");
-      } else {
-        // Если hash не совпадает с ни одним известным, показываем home
+      } else if (hash === "home" || hash === "") {
+        const homeSection = document.getElementById("main-section");
+        if (homeSection && homeSection.innerHTML.trim() === "" && homeTemplate) {
+          homeSection.innerHTML = homeTemplate;
+        }
         animateIn(document.getElementById("main-section"), "flex");
-        // Устанавливаем hash в "home" для ясности
+        window.location.hash = "home";
+      } else {
+        // Если hash неизвестен – переходим на главную
+        const homeSection = document.getElementById("main-section");
+        if (homeSection && homeSection.innerHTML.trim() === "" && homeTemplate) {
+          homeSection.innerHTML = homeTemplate;
+        }
+        animateIn(document.getElementById("main-section"), "flex");
         window.location.hash = "home";
       }
     }
@@ -477,7 +524,7 @@
     function changeSlide(offset) {
       showSlide(currentSlide + offset);
     }
-    // Функция для ленивой загрузки изображений
+    // Функция ленивой загрузки изображений (IntersectionObserver)
     function lazyLoadImages() {
       const lazyImages = document.querySelectorAll('.corefx-gallery img[loading="lazy"]');
       const observer = new IntersectionObserver((entries, observerRef) => {
@@ -494,14 +541,21 @@
       });
       lazyImages.forEach(img => observer.observe(img));
     }
-    // Обработчик загрузки страницы и подписка на событие изменения хеша
+    // Обработчик загрузки страницы и подписка на изменение хеша
     document.addEventListener("DOMContentLoaded", () => {
+      // Сохраняем первоначальное содержимое Home и CoreFX
+      const homeSection = document.getElementById("main-section");
+      if (homeSection) {
+        homeTemplate = homeSection.innerHTML;
+      }
+      const corefxGallery = document.querySelector('#corefx-section .corefx-gallery');
+      if (corefxGallery) {
+        corefxGalleryTemplate = corefxGallery.innerHTML;
+      }
       // Скрываем все секции при загрузке
       hideAllSections(["main-section", "corefx-section", "install-section", "faq-section"]);
-      // Инициализируем галерею и ленивую загрузку
       initGallery();
       lazyLoadImages();
-      // Выполняем маршрутизацию в зависимости от начального хеша
       routePage();
     });
     window.addEventListener("hashchange", routePage);
@@ -512,7 +566,6 @@
   <div id="main-section" class="container">
     <img src="https://i.imgur.com/JfStkmR.gif" alt="Logo GIF" class="logo-placeholder" loading="lazy" />
     <div class="icons">
-      <!-- При клике обновляем hash, маршрутизатор сам покажет нужную секцию -->
       <a href="#corefx" class="icon-link">CoreFX</a>
       <a href="https://discord.gg/jK4SRmBqYt" class="icon-link" target="_blank">Discord</a>
       <a href="https://www.youtube.com/@CRXHVRD" class="icon-link" target="_blank">Youtube</a>
@@ -738,7 +791,7 @@
             <li>
               <strong>Uninstalling CoreFX:</strong>
               <ol>
-                <li>Restore original files via your game launcher (Method 1) or remove <code>user_resources</code> (Method 2).</li>
+                <li>Restore original files via your game launcher (Method 1) или remove <code>user_resources</code> (Method 2).</li>
               </ol>
             </li>
             <li>
