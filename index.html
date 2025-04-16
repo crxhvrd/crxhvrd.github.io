@@ -2,210 +2,278 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>CoreFX README (English)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Подключение шрифта Montserrat (Bold) с Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:700&display=swap" rel="stylesheet">
-  <!-- Стили для базовой верстки и улучшенного оформления -->
+  <title>CoreFX Portal</title>
+  <!-- Подключаем шрифт Sahitya с нужными весами -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sahitya:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
-    * {
-      box-sizing: border-box;
+    /* Сброс отступов и базовая настройка */
+    html, body {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
     body {
-      font-family: 'Montserrat', sans-serif;
       background-color: #000;
       color: #fff;
-      line-height: 1.6;
-      font-weight: 700;
-    }
-    /* Фоновая картинка – занимает правую область, не затрагивает левое меню */
-    .background-container {
-      position: fixed;
-      top: 0;
-      left: 250px; /* Отступ равен ширине сайдбара */
-      width: calc(100% - 250px);
-      height: 100%;
-      background-image: url('https://i.imgur.com/H1ntcaF.png');
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      filter: blur(5px);
-      z-index: -1;
-    }
-    /* Используем min-height, чтобы контейнер растягивался при большом объёме текста */
-    .app-container {
+      font-family: 'Sahitya', sans-serif;
+      text-align: center;
       display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: auto;
       min-height: 100vh;
-      overflow: hidden;
     }
-/* Боковое меню в черно-серо-белом стиле с градиентами */
-.sidebar {
-  width: 250px;
-  background: linear-gradient(135deg, #000, #444);
-  padding: 20px;
-  box-shadow: 2px 0 5px rgba(255, 255, 255, 0.1);
-  position: relative;
-  z-index: 1;
-}
-
-.sidebar-logo {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.sidebar-logo img {
-  max-width: 100%;
-  height: auto;
-  /* При необходимости, можно задать явный размер, например: width: 180px; */
-}
-
-.sidebar nav ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar nav ul li {
-  margin-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sidebar nav ul li:last-child {
-  border-bottom: none;
-}
-
-.sidebar nav ul li button {
-  width: 100%;
-  background: none;
-  border: none;
-  color: #ddd;
-  padding: 10px 5px;
-  font-size: 18px;
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.3s ease, padding-left 0.3s ease;
-}
-
-.sidebar nav ul li button:hover {
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 100%);
-  padding-left: 15px;
-}
-
-.sidebar nav ul li.active button {
-  background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%);
-  padding-left: 15px;
-}
-
-/* Изображение логотипа */
-.sidebar-logo img {
-  max-width: 100%;
-  height: auto;
-  /* при необходимости можно указать конкретную ширину, 
-     например width: 180px; 
-     чтобы явно задать масштаб логотипа */
-}
-    /* Основная область с контентом – контент растёт по высоте, центрирование по горизонтали */
-    .content {
-      flex: 1;
-      padding: 20px;
-      overflow-x: hidden;
+    .container {
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    /* Анимации появления/исчезания секций */
+    .fade-in {
+      animation: fadeIn 0.5s forwards;
+    }
+    .fade-out {
+      animation: fadeOut 0.5s forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(20px); }
+    }
+    /* Главный раздел (Home) */
+    #main-section {
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center; 
+      align-items: center;
+    }
+    #main-section .logo-placeholder {
+      display: block;
+      margin: 0 auto;
+      width: 500px;
+      height: auto;
+    }
+    #main-section .icons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 50px;
+    }
+    #main-section .footer-placeholder {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    a.icon-link,
+    a.download-button,
+    a.back-link,
+    a.install-link,
+    a.faq-link {
+      position: relative;
+      display: inline-block;
+      padding: 10px 20px;
+      color: rgba(10, 194, 255, 0.8);
+      font-size: 16px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    a.icon-link::after,
+    a.download-button::after,
+    a.back-link::after,
+    a.install-link::after,
+    a.faq-link::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background-color: currentColor;
+      transition: width 0.3s ease;
+    }
+    a.icon-link:hover::after,
+    a.download-button:hover::after,
+    a.back-link:hover::after,
+    a.install-link:hover::after,
+    a.faq-link:hover::after {
+      width: 100%;
+    }
+    /* Секция CoreFX (скриншоты и видео) */
+    #corefx-section {
+      background-color: #000;
+      min-height: 100vh;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 0;
+    }
+    .corefx-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      width: 30%;
+      margin: 0 auto;
+    }
+    .corefx-gallery img {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+    }
+    .buttons-row {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    /* Секция установки (требования и инструкции) */
+    #install-section {
+      background-color: #000;
+      min-height: 100vh;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    .install-container {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: left;
     }
     .page-content {
-      max-width: 900px;
-      width: 100%;
-      margin: 20px auto;
-      background-color: rgba(26, 26, 26, 0.95); /* немного прозрачный для легкого перехода к фону */
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 30px;
+      line-height: 1.5;
     }
-    .page-content h2 {
-      margin-bottom: 15px;
-      font-size: 32px;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-      padding-bottom: 10px;
-      text-align: center;
+    .page-content h2,
+    .page-content h3,
+    .install-block h4 {
+      margin: 1em 0 0.5em;
+      color: rgba(10, 194, 255, 0.8);
     }
-    .page-content h3 {
-      margin: 15px 0 10px;
-      font-size: 26px;
-    }
-    .page-content p,
     .page-content ul,
     .page-content ol {
-      margin-bottom: 15px;
+      margin-left: 20px;
+      margin-bottom: 1em;
     }
-    .page-content a {
-      color: #00bfff;
-      text-decoration: none;
+    .page-content li {
+      margin: 0.5em 0;
     }
-    .page-content a:hover {
-      text-decoration: underline;
-    }
-    /* Кнопки для ссылок и переключения вкладок */
-    .links-container,
-    .installation-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 15px 0;
-      justify-content: center;
-    }
-    .links-container button,
-    .installation-tabs button {
+    .page-content code {
       background-color: #111;
-      color: #fff;
-      border: 2px solid #fff;
-      padding: 10px 16px;
-      border-radius: 5px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: 90%;
+      color: #0ac2ff;
+    }
+    /* Таб навигация для установки */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tabs button {
+      background: transparent;
+      border: none;
+      color: rgba(10, 194, 255, 0.8);
+      font-size: 16px;
+      padding: 10px 20px;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-size: 14px;
-    }
-    .links-container button:hover,
-    .installation-tabs button:hover {
-      background-color: #fff;
-      color: #000;
-    }
-    .installation-tabs button.active {
-      background-color: #fff;
-      color: #000;
-    }
-    /* Оформление блока установки */
-    .install-block {
-      background-color: #111;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      padding: 20px;
-      margin-top: 10px;
-    }
-    .install-block h4 {
-      margin-top: 0;
-      font-size: 22px;
-      margin-bottom: 10px;
-    }
-    .install-block ul,
-    .install-block ol {
-      padding-left: 20px;
-    }
-    .install-block code {
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 2px 4px;
-      border-radius: 4px;
-    }
-    /* Адаптивное оформление для видео */
-    .video-container {
       position: relative;
-      padding-bottom: 56.25%; /* Соотношение сторон 16:9 */
-      height: 0;
-      overflow: hidden;
-      max-width: 100%;
-      margin: 0 auto 20px;
-      border-radius: 5px;
     }
-    .video-container iframe {
+    .tabs button::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background-color: currentColor;
+      transition: width 0.3s ease;
+    }
+    .tabs button:hover::after,
+    .tabs button.active::after {
+      width: 100%;
+    }
+    .tab-content {
+      display: none;
+      margin-top: 20px;
+    }
+    /* Лайтбокс */
+    #lightbox {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: #fff;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    /* Контейнер лайтбокса для содержимого слайда */
+    #lightbox-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    /* Базовый стиль для контента слайда (для cross-fade) */
+    .slide-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: opacity 0.5s ease;
+      opacity: 0;
+    }
+    /* Общий контейнер для контента внутри лайтбокса */
+    .lightbox-content {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 90%;
+      max-width: 1200px;
+      max-height: 90vh;
+      margin: 5% auto;
+      overflow: hidden;
+      background: transparent;
+    }
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .lightbox-video-container {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+    }
+    .lightbox-video-container iframe {
       position: absolute;
       top: 0;
       left: 0;
@@ -213,150 +281,339 @@
       height: 100%;
       border: 0;
     }
-    /* Галерея скриншотов – крупные миниатюры */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 10px;
-    }
-    .gallery img {
-      width: 100%;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 5px;
+    /* Кнопки переключения слайдов */
+    .prev, .next {
       cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-    .gallery img:hover {
-      transform: scale(1.05);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    table td {
-      vertical-align: top;
-      padding: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    table td:first-child {
-      width: 15%;
-      font-weight: bold;
-    }
-    /* Оформление модального окна для скриншотов */
-    .screenshot-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .screenshot-modal img {
-      max-width: 90%;
-      max-height: 90%;
-    }
-    .modal-close-button {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 30px;
-      color: #fff;
-      background: none;
-      border: none;
-      cursor: pointer;
-      z-index: 1001;
-    }
-    .modal-nav {
       position: absolute;
       top: 50%;
-      transform: translateY(-50%);
-      font-size: 50px;
+      padding: 16px;
       color: #fff;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 20px;
-      z-index: 1001;
+      font-weight: bold;
+      font-size: 24px;
+      user-select: none;
+      transition: 0.3s;
+      background-color: rgba(255, 255, 255, 0.2);
+      text-decoration: none;
     }
-    .modal-prev {
-      left: 20px;
+    .prev:hover, .next:hover {
+      background-color: rgba(255, 255, 255, 0.4);
     }
-    .modal-next {
-      right: 20px;
+    .prev {
+      left: 0;
+      border-radius: 0 3px 3px 0;
+    }
+    .next {
+      right: 0;
+      border-radius: 3px 0 0 3px;
+    }
+    /* Кнопки возврата в секции установки */
+    #install-section .back-link,
+    #install-section .faq-link {
+      display: inline-block;
+      margin: 0;
+      width: auto;
+      text-align: center;
+    }
+    /* Секция FAQ and Disclaimer */
+    #faq-section {
+      background-color: #000;
+      min-height: 100vh;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
     }
   </style>
+
+  <script>
+    // Общие функции анимации (без изменений)
+    function animateOut(element, callback) {
+      element.classList.remove("fade-in");
+      element.classList.add("fade-out");
+      setTimeout(() => {
+        element.style.display = "none";
+        element.classList.remove("fade-out");
+        if(callback) callback();
+      }, 500);
+    }
+    function animateIn(element, displayStyle = "flex") {
+      element.style.display = displayStyle;
+      element.classList.add("fade-in");
+      setTimeout(() => {
+        element.classList.remove("fade-in");
+      }, 500);
+    }
+
+    // Функции маршрутизации по секциям (без изменений)
+    function showCorefxSection() {
+      const mainSection = document.getElementById("main-section");
+      animateOut(mainSection, () => {
+        const corefxSection = document.getElementById("corefx-section");
+        animateIn(corefxSection, "flex");
+      });
+      history.pushState({ section: "corefx" }, "", "/corefx");
+    }
+    function showInstallSection() {
+      const corefxSection = document.getElementById("corefx-section");
+      animateOut(corefxSection, () => {
+        const installSection = document.getElementById("install-section");
+        animateIn(installSection, "flex");
+        showTab('singleplayer');
+      });
+      history.pushState({ section: "install" }, "", "/installation");
+    }
+    function showFaqSection() {
+      const installSection = document.getElementById("install-section");
+      animateOut(installSection, () => {
+        const faqSection = document.getElementById("faq-section");
+        animateIn(faqSection, "flex");
+      });
+      history.pushState({ section: "faq" }, "", "/faq");
+    }
+    function backToCoreFX() {
+      const installSection = document.getElementById("install-section");
+      animateOut(installSection, () => {
+        const corefxSection = document.getElementById("corefx-section");
+        animateIn(corefxSection, "flex");
+      });
+      history.pushState({ section: "corefx" }, "", "/corefx");
+    }
+    function backToInstallSection() {
+      const faqSection = document.getElementById("faq-section");
+      animateOut(faqSection, () => {
+        const installSection = document.getElementById("install-section");
+        animateIn(installSection, "flex");
+      });
+      history.pushState({ section: "install" }, "", "/installation");
+    }
+    function goBack() {
+      // Показываем главную секцию с анимацией (при переходах)
+      const sectionsToHide = ["corefx-section", "install-section", "faq-section"];
+      sectionsToHide.forEach(id => {
+        const sec = document.getElementById(id);
+        if(sec.style.display !== "none") {
+          animateOut(sec);
+        }
+      });
+      setTimeout(() => {
+        const mainSection = document.getElementById("main-section");
+        animateIn(mainSection, "flex");
+        window.scrollTo(0, 0);
+      }, 500);
+      history.pushState({ section: "home" }, "", "/");
+    }
+
+    // Обработчик переходов (назад/вперед)
+    window.onpopstate = function(event) {
+      const state = event.state;
+      if (state) {
+        switch (state.section) {
+          case "install":
+            showInstallSection();
+            break;
+          case "corefx":
+            showCorefxSection();
+            break;
+          case "faq":
+            showFaqSection();
+            break;
+          case "home":
+          default:
+            goBack();
+            break;
+        }
+      } else {
+        goBack();
+      }
+    };
+
+    // Функция для показа вкладок внутри секции установки (без изменений)
+    function showTab(tabId) {
+      const tabs = document.querySelectorAll('.tab-content');
+      tabs.forEach(tab => tab.style.display = 'none');
+      const tabButtons = document.querySelectorAll('.tabs button');
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      document.getElementById(tabId).style.display = 'block';
+      document.getElementById(tabId + '-btn').classList.add('active');
+    }
+
+    // Галерея и лайтбокс (без изменений)
+    let currentSlide = 0;
+    let slides = [];
+    function initGallery() {
+      const galleryItems = document.querySelectorAll('.corefx-gallery img');
+      slides = [];
+      galleryItems.forEach((item, index) => {
+        if (item.getAttribute('data-video') === "true") {
+          slides.push({
+            type: 'video',
+            videoId: item.getAttribute('data-video-id'),
+            thumb: item.src
+          });
+        } else {
+          slides.push({
+            type: 'image',
+            src: item.src
+          });
+        }
+        item.addEventListener('click', () => {
+          openLightbox(index);
+        });
+      });
+    }
+    function openLightbox(index) {
+      currentSlide = index;
+      const lightbox = document.getElementById('lightbox');
+      lightbox.style.display = 'block';
+      lightbox.classList.add('fade-in');
+      showSlide(currentSlide);
+    }
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('fade-in');
+      lightbox.classList.add('fade-out');
+      setTimeout(() => {
+        lightbox.style.display = 'none';
+        lightbox.classList.remove('fade-out');
+        document.getElementById('lightbox-content').innerHTML = '';
+      }, 500);
+    }
+    function showSlide(index) {
+      if (index < 0) {
+        currentSlide = slides.length - 1;
+      } else if (index >= slides.length) {
+        currentSlide = 0;
+      } else {
+        currentSlide = index;
+      }
+      const slide = slides[currentSlide];
+      const container = document.getElementById('lightbox-content');
+      const newContent = document.createElement('div');
+      newContent.classList.add('slide-content');
+      if (slide.type === 'image') {
+        const img = document.createElement('img');
+        img.src = slide.src;
+        img.alt = 'Slide Image';
+        newContent.appendChild(img);
+      } else if (slide.type === 'video') {
+        const videoContainer = document.createElement('div');
+        videoContainer.classList.add('lightbox-video-container');
+        const iframe = document.createElement('iframe');
+        iframe.src = "https://www.youtube.com/embed/" + slide.videoId + "?autoplay=1";
+        iframe.setAttribute("frameborder", "0");
+        iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
+        iframe.setAttribute("allowfullscreen", "true");
+        videoContainer.appendChild(iframe);
+        newContent.appendChild(videoContainer);
+      }
+      const oldContent = container.firstElementChild;
+      container.appendChild(newContent);
+      setTimeout(() => {
+        newContent.style.opacity = 1;
+        if (oldContent) {
+          const iframes = oldContent.getElementsByTagName('iframe');
+          for (let i = 0; i < iframes.length; i++) {
+            iframes[i].src = "";
+          }
+          oldContent.style.opacity = 0;
+        }
+      }, 20);
+      setTimeout(() => {
+        if (oldContent) {
+          container.removeChild(oldContent);
+        }
+      }, 520);
+    }
+    function changeSlide(offset) {
+      showSlide(currentSlide + offset);
+    }
+
+    // Изменённый обработчик загрузки: 
+    // если открывается главная страница, показываем её сразу без анимации
+    document.addEventListener("DOMContentLoaded", () => {
+      initGallery();
+      const path = window.location.pathname;
+      if (path === "/installation" || path === "/install") {
+        showInstallSection();
+      } else if (path === "/corefx") {
+        showCorefxSection();
+      } else if (path === "/faq") {
+        showFaqSection();
+      } else {
+        // Если главная страница, показываем ее без анимации при загрузке
+        const mainSection = document.getElementById("main-section");
+        mainSection.style.display = "flex";
+        mainSection.style.opacity = "1";
+        history.replaceState({ section: "home" }, "", "/");
+      }
+    });
+  </script>
 </head>
 <body>
-  <!-- Фоновая картинка – не затрагивает левое меню -->
-  <div class="background-container"></div>
-  
-  <!-- Корневой элемент для React -->
-  <div id="root"></div>
-  
-  <!-- Подключение React, ReactDOM и Babel через CDN -->
-  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  
-  <!-- React-код приложения -->
-  <script type="text/babel">
-    /****************
-      INFO SECTION
-    ****************/
-    const Info = () => (
-      <div className="page-content">
-        <h2>Info</h2>
-        <h3>CoreFX</h3>
-        <p>
-          CoreFX is a free and open graphical modification designed for Grand Theft Auto V.
-          It enhances the overall visual fidelity of the game by reworking the weather system,
-          introducing higher-quality textures, and adding a range of custom shaders and post-processing effects.
-          The primary objective of CoreFX is to deliver a more realistic and immersive visual experience, although it may come with an additional performance cost.
-        </p>
-        <h3>CoreENB</h3>
-        <p>
-          CoreFX works closely with a custom ENBSeries variant called CoreENB.
-          Although CoreFX can be used without CoreENB for improved performance, the full potential of this modification is achieved when both are used together.
-          Please note that using CoreENB can be resource-intensive and might increase the risk of instability.
-        </p>
-        <h3>CRFX ReShade</h3>
-        <p>
-          A dedicated ReShade version of CoreENB shaders is under development and will be released soon!
-        </p>
-        <h3>Development Status</h3>
-        <p>
-          CoreFX is currently in an open beta stage.
-          New features, refinements, and optimizations are continuously being developed.
-          Users are encouraged to test the latest versions, report issues, and provide feedback to help shape the project’s evolution.
-          While the base version is free, additional “SE Optionals” are available for purchase to help support future development.
-        </p>
-      </div>
-    );
-    
-    /***********************
-      REQUIREMENTS SECTION
-    ***********************/
-    const Requirements = () => (
-      <div className="page-content">
+  <!-- Главный раздел (Home) -->
+  <div id="main-section" class="container">
+    <img src="https://i.imgur.com/JfStkmR.gif" alt="Logo GIF" class="logo-placeholder" />
+    <div class="icons">
+      <a href="javascript:void(0)" class="icon-link" onclick="showCorefxSection()">СoreFX</a>
+      <a href="https://discord.gg/jK4SRmBqYt" class="icon-link">Discord</a>
+      <a href="https://www.youtube.com/@CRXHVRD" class="icon-link">Youtube</a>
+    </div>
+    <div class="footer-placeholder">Beta 2025</div>
+  </div>
+
+  <!-- Секция CoreFX (скриншоты и видео) -->
+  <div id="corefx-section">
+    <div class="logo-section">
+      <img src="https://i.imgur.com/4g3BiDW.png" alt="Логотип" style="max-width:200px; display:block; margin:20px auto; background: transparent;" />
+    </div>
+    <div class="corefx-gallery">
+      <img src="https://i.imgur.com/sclszvM.png" alt="Screenshot 1">
+      <img src="https://i.imgur.com/VV4vy6H.jpeg" alt="Screenshot 2">
+      <img src="https://i.imgur.com/YoSvkFF.jpeg" alt="Screenshot 3">
+      <img src="https://i.imgur.com/FDnano1.jpeg" alt="Screenshot 4">
+      <img src="https://i.imgur.com/PgnkDDD.jpeg" alt="Screenshot 5">
+      <img src="https://i.imgur.com/yt3BCSo.jpeg" alt="Screenshot 6">
+      <img src="https://i.imgur.com/CPQVBtC.jpeg" alt="Screenshot 7">
+      <img src="https://i.imgur.com/sZhTBjW.jpeg" alt="Screenshot 8">
+      <img src="https://i.imgur.com/CYy4wx6.jpeg" alt="Screenshot 9">
+      <img src="https://i.imgur.com/zbe6Kdj.png" alt="Screenshot 10">
+      <img src="https://i.imgur.com/pv5R1XJ.jpeg" alt="Screenshot 11">
+      <img src="https://i.imgur.com/5i0i3au.png" alt="Screenshot 12">
+      <img src="https://img.youtube.com/vi/YlxUU4jMuGI/hqdefault.jpg" alt="Video 1" data-video="true" data-video-id="YlxUU4jMuGI">
+      <img src="https://img.youtube.com/vi/ZIs3BEJQno8/hqdefault.jpg" alt="Video 2" data-video="true" data-video-id="ZIs3BEJQno8">
+      <img src="https://img.youtube.com/vi/YqWausjw_ns/hqdefault.jpg" alt="Video 3" data-video="true" data-video-id="YqWausjw_ns">
+    </div>
+    <div class="buttons-row">
+      <a href="https://www.patreon.com/crxhvrd" class="download-button" target="_blank">Download CoreFX</a>
+      <a href="javascript:void(0)" class="install-link" onclick="showInstallSection()">How to Install</a>
+      <a href="javascript:void(0)" class="back-link" onclick="goBack()">Back to Home</a>
+    </div>
+  </div>
+
+  <!-- Секция установки (Requirements + Instructions) -->
+  <div id="install-section">
+    <div class="install-container">
+      <div class="page-content">
         <h2>Requirements</h2>
         <p>
           Before installing and using CoreFX and CoreENB, please ensure that your system and game environment meet the following requirements.
           Proper hardware and software setup is essential for stability and optimal visual performance.
         </p>
-        <h3>Hardware Requirements</h3>
+        <h3>Legacy Hardware Requirements</h3>
         <ul>
-          <li><strong>Minimum (1080p, ~30 FPS):</strong> NVIDIA GeForce GTX 1060 or AMD Radeon RX 580 (or equivalent)</li>
-          <li><strong>Recommended (1080p, ~60 FPS):</strong> NVIDIA GeForce RTX 3060 or AMD Radeon RX 6600 XT (or equivalent)</li>
+          <li><strong>ENB Recommended:</strong> NVIDIA GeForce RTX 3060 or AMD Radeon RX 6600 XT</li>
+          <li><strong>No ENB Recommended:</strong> NVIDIA GeForce GTX 1060 or AMD Radeon RX 580</li>
+        </ul>
+        <h3>Enhanced Hardware Requirements</h3>
+        <ul>
+          <li><strong>Ray Tracing Recommended:</strong> NVIDIA GeForce RTX 4060 Ti or AMD Radeon RX 7700 XT</li>
         </ul>
         <h3>Software</h3>
         <ul>
           <li><strong>Base Game:</strong> A legitimate copy of Grand Theft Auto V.</li>
-          <li><strong>OpenIV & OpenIV.asi (Singleplayer):</strong> Required for installing the mod into the <em>mods</em> folder.</li>
-          <li><strong>ScriptHookV & ASILoader (Singleplayer):</strong> Necessary for proper script loading and compatibility with certain modifications.</li>
+          <li><strong>OpenIV & OpenIV.asi (Legacy Singleplayer):</strong> Required for installing the mod into the Legacy <em>mods</em> folder.</li>
+          <li><strong>CodeWalker & OpenRPF.asi (Enhanced Singleplayer):</strong> Required for installing the mod into the Enhanced <em>mods</em> folder.</li>
+          <li><strong>ScriptHookV & ASILoader (Legacy & Enhanced Singleplayer):</strong> Necessary for proper script loading and compatibility with certain modifications.</li>
         </ul>
         <h3>Optional</h3>
         <ul>
@@ -364,229 +621,196 @@
           <li><strong>Graphics Driver Updates:</strong> Keep your GPU drivers up to date for better compatibility and performance.</li>
         </ul>
       </div>
-    );
-    
-    /****************
-      LINKS SECTION
-    ****************/
-    const Links = () => (
-      <div className="page-content">
-        <h2>Links</h2>
-        <div className="links-container">
-          <button onClick={() => window.open('https://www.patreon.com/crxhvrd', '_blank')}>
-            Download CoreFX
-          </button>
-          <button onClick={() => window.open('https://discord.gg/jK4SRmBqYt', '_blank')}>
-            Discord Server
-          </button>
-          <button onClick={() => window.open('https://www.patreon.com/checkout/crxhvrd?rid=0', '_blank')}>
-            Get SE Optionals
-          </button>
+
+      <!-- Tabs для установки -->
+      <div class="tabs">
+        <button id="singleplayer-btn" class="tab-button active" onclick="showTab('singleplayer')">Legacy Singleplayer</button>
+        <button id="enhanced-btn" class="tab-button" onclick="showTab('enhanced')">Enhanced Singleplayer</button>
+        <button id="fivem-btn" class="tab-button" onclick="showTab('fivem')">Legacy FiveM</button>
+        <button id="fivem-server-btn" class="tab-button" onclick="showTab('fivem-server')">Legacy FiveM ServerSide</button>
+        <button id="ragemp-btn" class="tab-button" onclick="showTab('ragemp')">Legacy RageMP</button>
+      </div>
+
+      <!-- Контент табов -->
+      <div id="singleplayer" class="tab-content" style="display: block;">
+        <div class="install-block">
+          <h4>Legacy Singleplayer Installation</h4>
+          <ul>
+            <li>
+              <strong>Before Installing:</strong>
+              <ol>
+                <li>Add <code>-noBattlEye</code> to your game launcher's parameters.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Installing CoreFX:</strong>
+              <ol>
+                <li>Open <code>InstallCoreFX.oiv</code> using OpenIV.</li>
+                <li>Follow the on-screen prompts to install the mod into the <em>mods</em> folder.</li>
+                <li>If on an older game build, install the <strong>Old game build compatibility patch</strong> from the <em>Optionals</em> folder.</li>
+                <li>Launch GTA V and set in-game brightness to 40-50%.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Uninstalling CoreFX:</strong>
+              <ol>
+                <li>Open <code>UninstallCoreFX.oiv</code> using OpenIV.</li>
+                <li>Reinstall original files in the <em>mods</em> folder.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Installing CoreENB:</strong>
+              <ol>
+                <li>Choose either <strong>ENB Quality</strong> or <strong>ENB Performance</strong> from the downloaded <code>CoreENB</code> folder.</li>
+                <li>Copy files to your GTA V root directory.</li>
+                <li>Set PostFX and Shader Quality to Ultra and use DirectX 11.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Uninstalling CoreENB:</strong>
+              <ol>
+                <li>Remove all ENB files from your GTA V folder.</li>
+                <li>Restart the game.</li>
+              </ol>
+            </li>
+          </ul>
         </div>
       </div>
-    );
-    
-    /***********************************************
-      INSTALLATION SECTION with Tab Navigation
-    ***********************************************/
-    // Singleplayer Installation
-    const SingleplayerInstall = () => (
-      <div className="install-block">
-        <h4>Singleplayer Installation</h4>
-        <ul>
-          <li>
-            <strong>Before Installing:</strong>
-            <ol>
-              <li>Disable BattlEye Anti-Cheat by adding <code>-noBattlEye</code> to your game launcher's parameters.</li>
-            </ol>
-          </li>
-          <li>
-            <strong>Installing CoreFX:</strong>
-            <ol>
-              <li>Open the file <code>InstallCoreFX.oiv</code> using OpenIV.</li>
-              <li>Follow the on-screen prompts to install the mod into the <em>mods</em> folder.</li>
-              <li>If you are on an older game build, install the <strong>Old game build compatibility patch</strong> from the <em>Optionals</em> folder.</li>
-              <li>After installation, launch GTA V and set your in-game brightness to 40-50% for optimal visuals.</li>
-            </ol>
-          </li>
-          <li>
-            <strong>Uninstalling CoreFX:</strong>
-            <ol>
-              <li>Open the file <code>UninstallCoreFX.oiv</code> using OpenIV.</li>
-              <li>Reinstall the original files into the <em>mods</em> folder to restore the default graphics.</li>
-            </ol>
-          </li>
-          <li>
-            <strong>Installing CoreENB:</strong>
-            <ol>
-              <li>Within the downloaded <code>CoreENB</code> folder, choose one of the two subfolders:
-                <ul>
-                  <li><strong>ENB Quality:</strong> For a higher quality visual experience.</li>
-                  <li><strong>ENB Performance:</strong> For better performance.</li>
-                </ul>
-              </li>
-              <li>Copy all files from the selected subfolder to your GTA V root directory (where <code>GTA5.exe</code> is located).</li>
-              <li>For best results, set your in-game PostFX and Shader Quality to Ultra and use DirectX 11.</li>
-            </ol>
-          </li>
-          <li>
-            <strong>Uninstalling CoreENB:</strong>
-            <ol>
-              <li>Remove all ENB-related files (e.g. <code>d3d11.dll</code>, <code>enbseries.ini</code>, <code>enblocal.ini</code>, <code>shaderinput</code>, the <code>enbseries</code> folder, and <code>enbhelper.dll</code> if present) from your GTA V folder.</li>
-              <li>Restart the game to run without the ENB enhancements.</li>
-            </ol>
-          </li>
-        </ul>
-      </div>
-    );
-    
-    // FiveM Installation
-    const FiveMInstall = () => (
-      <div className="install-block">
-        <h4>FiveM Installation</h4>
-        <ul>
-          <li>
-            <strong>Installing CoreFX:</strong>
-            <ol>
-              <li>Locate the file <code>corefxPack.rpf</code> within the CoreFX package.</li>
-              <li>Place it into your FiveM Mods folder (typically at <code>%localappdata%\FiveM</code>).</li>
-              <li>If using an older game build, install the old-build patch from the <em>Optionals</em> folder.</li>
-              <li>Set your in-game brightness to approximately 40-50%.</li>
-            </ol>
-          </li>
-          <li>
-            <strong>Uninstalling CoreFX:</strong>
-            <ol>
-              <li>Remove the <code>corefxPack.rpf</code> file from your FiveM Mods folder.</li>
-              <li>Restart FiveM to revert to default visuals.</li>
-            </ol>
-          </li>
-          <li>
-            <strong>Installing CoreENB:</strong>
-            <ol>
-              <li>Select one subfolder within <code>CoreENB</code> (either <strong>ENB Quality</strong> or <strong>ENB Performance</strong>).</li>
-              <li>If the selected folder contains a <code>Plugins</code> folder, copy its contents to your FiveM Plugins folder.</li>
-              <li>Then copy the remaining files to the GTA V root directory used by FiveM.</li>
-              <li>Set PostFX and Shader Quality to Ultra and choose DirectX 11 for proper ENB functionality.</li>
-            </ol>
-          </li>
-          <li>
-            <strong>Uninstalling CoreENB:</strong>
-            <ol>
-              <li>Remove all ENB-related files from both your FiveM Plugins folder and the GTA V root directory.</li>
-              <li>Restart FiveM to remove the ENB enhancements.</li>
-            </ol>
-          </li>
-        </ul>
-      </div>
-    );
-    
-    // FiveM ServerSide Installation
-    const FiveMServerSideInstall = () => (
-      <div className="install-block">
-        <h4>FiveM ServerSide Installation</h4>
-        <ol>
-          <li>Place the <code>[CoreFX]</code> folder into the <code>resources</code> directory on your FiveM server.</li>
-          <li>Edit your <code>server.cfg</code> file and add the line <code>start CoreFX</code>. Do not use <code>ensure CoreFX</code> or <code>start [CoreFX]</code> as they may break the game.</li>
-          <li>For optional add-ons, open <code>config.lua</code> in <code>CoreFX\[CoreFX]\CoreFX</code> and change the necessary parameters from "false" to "true".</li>
-        </ol>
-      </div>
-    );
-    
-    // RageMP Installation
-    const RageMPInstall = () => (
-      <div className="install-block">
-        <h4>RageMP Installation</h4>
-        <ul>
-          <li>
-            <strong>Before Installing:</strong>
-            <ol>
-              <li>EasyAntiCheat may flag <code>enbhelper.dll</code>. Since it offers no functionality for CoreFX, it can be safely removed to avoid conflicts.</li>
-            </ol>
-          </li>
-          <li>
-            <strong>Installing CoreFX:</strong>
-            <ol>
-              <li><strong>Method 1: update.rpf replace install</strong>
-                <ol type="a">
-                  <li>Locate the <code>update</code> folder provided with CoreFX modifications.</li>
-                  <li>Copy and merge its contents into your GTA V root directory – confirm file replacements when prompted.</li>
-                  <li>After installation, set your in-game brightness to approximately 40-50%.</li>
-                </ol>
-              </li>
-              <li><strong>Method 2: user_resources install</strong>
-                <ol type="a">
-                  <li>Copy the <code>user_resources</code> folder into your RageMP directory.</li>
-                  <li>Ensure that all files are properly placed within the folder.</li>
-                  <li>Set your in-game brightness to approximately 40-50%.</li>
-                </ol>
-              </li>
-            </ol>
-          </li>
-          <li>
-            <strong>Uninstalling CoreFX:</strong>
-            <ol>
-              <li>If using Method 1, verify game files via your game launcher (Steam/Epic/Rockstar) to restore the originals.</li>
-              <li>If using Method 2, delete the <code>user_resources</code> folder from your RageMP directory.</li>
-            </ol>
-          </li>
-          <li>
-            <strong>Installing CoreENB:</strong>
-            <ol>
-              <li>Within <code>CoreENB</code>, choose either <strong>ENB Quality</strong> or <strong>ENB Performance</strong>.</li>
-              <li>Copy all files from the chosen subfolder into your RageMP directory, excluding <code>enbhelper.dll</code> (to avoid conflicts with EasyAntiCheat).</li>
-              <li>Set in-game PostFX and Shader Quality to Ultra and use DirectX 11 for optimal results.</li>
-            </ol>
-          </li>
-          <li>
-            <strong>Uninstalling CoreENB:</strong>
-            <ol>
-              <li>Remove all ENB-related files from your RageMP directory.</li>
-              <li>Restart RageMP to run without the ENB enhancements.</li>
-            </ol>
-          </li>
-        </ul>
-      </div>
-    );
-    
-    // Main Installation component with tab navigation
-    const Installation = () => {
-      const [activeTab, setActiveTab] = React.useState('singleplayer');
-      const tabs = [
-        { id: 'singleplayer', title: 'Singleplayer', component: <SingleplayerInstall /> },
-        { id: 'fivem', title: 'FiveM', component: <FiveMInstall /> },
-        { id: 'serverside', title: 'FiveM ServerSide', component: <FiveMServerSideInstall /> },
-        { id: 'ragemp', title: 'RageMP', component: <RageMPInstall /> }
-      ];
-      
-      return (
-        <div className="page-content">
-          <h2>Installation</h2>
-          <p>
-            Before proceeding with the installation, please review the <strong>Requirements</strong> and <strong>Disclaimer</strong> sections.
-            Ensuring your system meets the requirements and understanding potential risks will help guarantee a smoother setup and gameplay experience.
-          </p>
-          <div className="installation-tabs">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={tab.id === activeTab ? 'active' : ''}
-              >
-                {tab.title}
-              </button>
-            ))}
-          </div>
-          {tabs.find(tab => tab.id === activeTab)?.component}
+	  
+	  <div id="enhanced" class="tab-content" style="display: none;">
+        <div class="install-block">
+          <h4>Enhanced Singleplayer Installation</h4>
+          <ul>
+            <li>
+              <strong>Before Installing:</strong>
+              <ol>
+                <li>Remove the old <code>dsound.dll</code> from your game directory.</li>
+                <li>Disable BattlEye Anticheat by adding <code>-noBattlEye</code> to your launch options.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Installing CoreFX:</strong>
+              <ol>
+                <li>Download and install ScriptHookV and OpenRPF.asi for GTA 5 Enhanced.</li>
+                <li>Copy all files from the CoreFX folder into your main GTA 5 Enhanced directory.</li>
+                <li>Launch the game, set brightness to 50%, and enjoy CoreFX.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>How To Install Streetlights Optionals:</strong>
+              <ol>
+                <li>After installing the main CoreFX Package, copy the <code>mods</code> folder into your GTA 5 Enhanced directory.</li>
+                <li>No further actions are required – just launch your game and enjoy.</li>
+              </ol>
+            </li>
+          </ul>
         </div>
-      );
-    };
-    
-    /************
-      FAQ SECTION
-    ************/
-    const FAQ = () => (
-      <div className="page-content">
+      </div>
+
+      <div id="fivem" class="tab-content">
+        <div class="install-block">
+          <h4>Legacy FiveM Installation</h4>
+          <ul>
+            <li>
+              <strong>Installing CoreFX:</strong>
+              <ol>
+                <li>Locate <code>corefxPack.rpf</code> in the package.</li>
+                <li>Place it into your FiveM Mods folder.</li>
+                <li>If on an older game build, install the old-build patch from <em>Optionals</em>.</li>
+                <li>Set in-game brightness to ~40-50%.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Uninstalling CoreFX:</strong>
+              <ol>
+                <li>Remove <code>corefxPack.rpf</code> from your Mods folder.</li>
+                <li>Restart FiveM.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Installing CoreENB:</strong>
+              <ol>
+                <li>Select either <strong>ENB Quality</strong> or <strong>ENB Performance</strong>.</li>
+                <li>If applicable, copy the <code>Plugins</code> folder contents to your FiveM Plugins folder.</li>
+                <li>Copy remaining files to your GTA V root directory.</li>
+                <li>Set PostFX and Shader Quality to Ultra and choose DirectX 11.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Uninstalling CoreENB:</strong>
+              <ol>
+                <li>Remove all ENB files from your FiveM directories.</li>
+                <li>Restart FiveM.</li>
+              </ol>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="fivem-server" class="tab-content">
+        <div class="install-block">
+          <h4>Legacy FiveM ServerSide Installation</h4>
+          <ol>
+            <li>Place the <code>[CoreFX]</code> folder into the <code>resources</code> directory on your FiveM server.</li>
+            <li>Edit your <code>server.cfg</code> file and add <code>start CoreFX</code>.</li>
+            <li>For add-ons, open <code>config.lua</code> in <code>CoreFX\[CoreFX]\CoreFX</code> and set parameters to "true" as needed.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div id="ragemp" class="tab-content">
+        <div class="install-block">
+          <h4>Legacy RageMP Installation</h4>
+          <ul>
+            <li>
+              <strong>Before Installing:</strong>
+              <ol>
+                <li>If flagged, remove <code>enbhelper.dll</code>.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Installing CoreFX:</strong>
+              <ol>
+                <li><strong>Method 1:</strong> Copy the <code>update</code> folder contents into your GTA V root directory.</li>
+                <li><strong>Method 2:</strong> Copy the <code>user_resources</code> folder into your RageMP directory.</li>
+                <li>Set in-game brightness to ~40-50%.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Uninstalling CoreFX:</strong>
+              <ol>
+                <li>Restore original files via your game launcher (Method 1) или remove <code>user_resources</code> (Method 2).</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Installing CoreENB:</strong>
+              <ol>
+                <li>Choose either <strong>ENB Quality</strong> or <strong>ENB Performance</strong>.</li>
+                <li>Copy files (except <code>enbhelper.dll</code>) to your RageMP directory.</li>
+                <li>Set PostFX and Shader Quality to Ultra и use DirectX 11.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Uninstalling CoreENB:</strong>
+              <ol>
+                <li>Remove all ENB files from your RageMP directory and restart the game.</li>
+              </ol>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 30px; margin-top: 30px;">
+        <a href="javascript:void(0)" class="faq-link" onclick="showFaqSection()">FAQ and Disclaimer</a>
+        <a href="javascript:void(0)" class="back-link" onclick="backToCoreFX()">Back to CoreFX</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Секция FAQ and Disclaimer -->
+  <div id="faq-section">
+    <div class="install-container">
+      <div class="page-content">
         <h2>FAQ</h2>
         <h3>Frequently Asked Questions</h3>
         <ul>
@@ -647,13 +871,7 @@
           </li>
         </ul>
       </div>
-    );
-    
-    /******************
-      DISCLAIMER SECTION
-    ******************/
-    const Disclaimer = () => (
-      <div className="page-content">
+      <div class="page-content">
         <h2>Disclaimer</h2>
         <p>
           This software is provided “as is” without any warranties, either expressed or implied.
@@ -667,7 +885,7 @@
         <ul>
           <li><strong>Remove ENBSeries:</strong> Delete all ENB-related files to restore stability (at the cost of advanced effects).</li>
           <li><strong>Use an older game patch (e.g., 2845):</strong> This patch may improve stability by avoiding code changes that affect ENBSeries.</li>
-          <li><strong>Run Crash Fixes:</strong> Execute <strong>ENBLauncher.bat</strong> or <strong>RagePluginHook_ENB.bat</strong> from the <em>Optionals → Crash Fixes</em> folder.</li>
+          <li><strong>Run Crash Fixes:</strong> Execute <strong>ENBLauncher.bat</strong> или <strong>RagePluginHook_ENB.bat</strong> in <em>Optionals → Crash Fixes</em>.</li>
         </ul>
         <p>
           Mixing CoreFX with other major visual overhauls is generally not recommended as it may lead to further instability.
@@ -677,233 +895,18 @@
           By proceeding, you agree to assume all risks associated with the use of this software.
         </p>
       </div>
-    );
-    
-    /*************
-      CREDITS SECTION
-    *************/
-    const Credits = () => (
-      <div className="page-content">
-        <h2>Credits</h2>
-        <table>
-          <tbody>
-            <tr>
-              <td><strong>crxhvrd</strong></td>
-              <td>
-                The main developer of CoreFX and a FiveMods.io team member based in Kyiv, Ukraine.
-                Previously created cinematic videos for various games and founded the βeta Discord community.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Valkill</strong></td>
-              <td>
-                Developer of the GTA V mod "RewriteV," who provided much of the foundational knowledge for GTA V modding that enabled the creation of CoreFX.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Dreamt</strong></td>
-              <td>
-                A member of the βeta community and a former mod developer who contributed significantly to CoreFX and its optional add-ons such as custom streetlight colors.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>FiveMods.io</strong></td>
-              <td>
-                A modding platform for GTA V. Rafk3242, a FiveMods.io team member, developed innovative tools like ENBHelper and ReshadeHelper for CoreFX.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Boris Vorontsov</strong></td>
-              <td>
-                The legendary creator of ENBSeries—a tool that injects custom shaders into games such as GTA V and forms the backbone of many advanced visual effects in CoreFX.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>rTangle</strong></td>
-              <td>
-                A βeta community member known for producing GTA V video content and the first trailer showcasing CoreFX.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Fir</strong></td>
-              <td>
-                A βeta community member and former cinematic GTA V video creator who helped refine CoreFX’s color palette for optimal visual fidelity.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Kronos</strong></td>
-              <td>
-                A member of the βeta community who produces videos for various games and contributed to the development of the CoreFX community.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>alloc8or</strong></td>
-              <td>
-                A GTA V mod developer who created VSReloader, a tool for quick editing of game files without restarting, streamlining the CoreFX development workflow.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>OpenIV</strong></td>
-              <td>
-                The essential program used to edit and mod Rockstar Games files, crucial for installing the necessary CoreFX assets.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>CodeWalker</strong></td>
-              <td>
-                A tool for editing and analyzing Rockstar Games files that played an important role in refining the visual aspects of CoreFX.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>ikt</strong></td>
-              <td>
-                A GTA V mod developer and tool creator responsible for ENBInputDisable, which prevents the camera from rotating when the ENB menu is open for easier shader adjustments.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>vytka1337</strong></td>
-              <td>
-                The original creator of the CoreFX FiveM ServerSide version.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="buttons-row" style="margin-top: 30px;">
+        <a href="javascript:void(0)" class="back-link" onclick="backToInstallSection()">Back to Installation</a>
       </div>
-    );
-    
-    /************
-      VIDEOS SECTION
-    ************/
-    const Videos = () => (
-      <div className="page-content">
-        <h2>Videos</h2>
-        <p>
-          Below you will find various video materials, including installation guides for different platforms as well as showcases demonstrating the visual enhancements CoreFX brings to GTA V.
-        </p>
-        <div className="video-container">
-          <iframe src="https://www.youtube.com/embed/fcVNrmHvcZQ" title="Video 1" allowFullScreen></iframe>
-        </div>
-        <div className="video-container">
-          <iframe src="https://www.youtube.com/embed/YqWausjw_ns" title="Video 2" allowFullScreen></iframe>
-        </div>
-        <div className="video-container">
-          <iframe src="https://www.youtube.com/embed/lsmFxlqYmWc" title="Video 3" allowFullScreen></iframe>
-        </div>
-        <div className="video-container">
-          <iframe src="https://www.youtube.com/embed/3LAdmP6YuEM" title="Video 4" allowFullScreen></iframe>
-        </div>
-        <div className="video-container">
-          <iframe src="https://www.youtube.com/embed/64bh3WZpoMo" title="Video 5" allowFullScreen></iframe>
-        </div>
-      </div>
-    );
-    
-    /*****************
-      SCREENSHOTS SECTION
-    *****************/
-    const Screenshots = () => {
-      const screenshots = [
-        "https://i.imgur.com/l1tKc8v.png",
-        "https://i.imgur.com/PxPdI1A.png",
-        "https://i.imgur.com/GPZDFjr.png",
-        "https://i.imgur.com/TI1GpuJ.png",
-        "https://i.imgur.com/mcoFiVd.png",
-        "https://i.imgur.com/wahzuud.jpeg",
-        "https://i.imgur.com/vAsEhVi.png",
-        "https://i.imgur.com/R0s4sf1.png",
-        "https://i.imgur.com/eketk3F.png"
-      ];
-      const [modalVisible, setModalVisible] = React.useState(false);
-      const [currentIndex, setCurrentIndex] = React.useState(0);
-      
-      const openModal = (index) => {
-        setCurrentIndex(index);
-        setModalVisible(true);
-      };
-      
-      const closeModal = () => {
-        setModalVisible(false);
-      };
-      
-      const showNext = (e) => {
-        e.stopPropagation();
-        setCurrentIndex((currentIndex + 1) % screenshots.length);
-      };
-      
-      const showPrev = (e) => {
-        e.stopPropagation();
-        setCurrentIndex((currentIndex - 1 + screenshots.length) % screenshots.length);
-      };
-      
-      return (
-        <div className="page-content">
-          <h2>Screenshots</h2>
-          <div className="gallery">
-            {screenshots.map((url, index) => (
-              <img key={index} src={url} alt={`Screenshot ${index + 1}`} onClick={() => openModal(index)} />
-            ))}
-          </div>
-          {modalVisible && (
-            <div className="screenshot-modal" onClick={closeModal}>
-              <button className="modal-close-button" onClick={(e) => { e.stopPropagation(); closeModal(); }}>
-                &times;
-              </button>
-              <button className="modal-nav modal-prev" onClick={showPrev}>
-                &lt;
-              </button>
-              <img src={screenshots[currentIndex]} alt={`Screenshot ${currentIndex + 1}`} onClick={(e) => e.stopPropagation()} />
-              <button className="modal-nav modal-next" onClick={showNext}>
-                &gt;
-              </button>
-            </div>
-          )}
-        </div>
-      );
-    };
-    
-    /****************************
-      APP: MAIN COMPONENT & NAVIGATION
-    ****************************/
-    const sections = {
-      Info: <Info />,
-      Requirements: <Requirements />,
-      Links: <Links />,
-      Installation: <Installation />,
-      FAQ: <FAQ />,
-      Disclaimer: <Disclaimer />,
-      Credits: <Credits />,
-      Videos: <Videos />,
-      Screenshots: <Screenshots />
-    };
-    
-    const App = () => {
-      const [activeSection, setActiveSection] = React.useState('Info');
-      const navItems = Object.keys(sections);
-      
-      return (
-        <div className="app-container">
-<aside className="sidebar">
-  <div className="sidebar-logo">
-    <img src="https://i.imgur.com/gMucLZJ.png" alt="CoreFX Logo" />
+    </div>
   </div>
-  <nav>
-    <ul>
-      {navItems.map(key => (
-        <li key={key} className={activeSection === key ? 'active' : ''}>
-          <button onClick={() => setActiveSection(key)}>{key}</button>
-        </li>
-      ))}
-    </ul>
-  </nav>
-</aside>
-          <main className="content">
-            {sections[activeSection]}
-          </main>
-        </div>
-      );
-    };
-    
-    ReactDOM.render(<App />, document.getElementById('root'));
-  </script>
+
+  <!-- Лайтбокс -->
+  <div id="lightbox">
+    <span class="close" onclick="closeLightbox()">&times;</span>
+    <div class="lightbox-content" id="lightbox-content"></div>
+    <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+    <a class="next" onclick="changeSlide(1)">&#10095;</a>
+  </div>
 </body>
 </html>
