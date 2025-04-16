@@ -561,6 +561,28 @@ document.addEventListener("DOMContentLoaded", () => {
     mainSection.style.opacity = "1";
     history.replaceState({ section: "home" }, "", "/");
   }
+  
+  function lazyLoadImages() {
+  const lazyImages = document.querySelectorAll('.corefx-gallery img[loading="lazy"]');
+  const observer = new IntersectionObserver((entries, observerRef) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Принудительно зададим src, если он изначально был установлен через data-src
+        const img = entry.target;
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+        observerRef.unobserve(img);
+      }
+    });
+  });
+
+  lazyImages.forEach(img => observer.observe(img));
+}
+
+document.addEventListener("DOMContentLoaded", lazyLoadImages);
+  
 });
 
   </script>
