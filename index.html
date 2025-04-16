@@ -326,233 +326,249 @@
   </style>
 
   <script>
-    // Общие функции анимации (без изменений)
-    function animateOut(element, callback) {
-      element.classList.remove("fade-in");
-      element.classList.add("fade-out");
-      setTimeout(() => {
-        element.style.display = "none";
-        element.classList.remove("fade-out");
-        if(callback) callback();
-      }, 500);
-    }
-    function animateIn(element, displayStyle = "flex") {
-      element.style.display = displayStyle;
-      element.classList.add("fade-in");
-      setTimeout(() => {
-        element.classList.remove("fade-in");
-      }, 500);
-    }
+// Общие функции анимации (без изменений)
+function animateOut(element, callback) {
+  element.classList.remove("fade-in");
+  element.classList.add("fade-out");
+  setTimeout(() => {
+    element.style.display = "none";
+    element.classList.remove("fade-out");
+    if(callback) callback();
+  }, 500);
+}
 
-    // Функции маршрутизации по секциям (без изменений)
-    function showCorefxSection() {
-      const mainSection = document.getElementById("main-section");
-      animateOut(mainSection, () => {
-        const corefxSection = document.getElementById("corefx-section");
-        animateIn(corefxSection, "flex");
-      });
-      history.pushState({ section: "corefx" }, "", "/corefx");
-    }
-    function showInstallSection() {
-      const corefxSection = document.getElementById("corefx-section");
-      animateOut(corefxSection, () => {
-        const installSection = document.getElementById("install-section");
-        animateIn(installSection, "flex");
-        showTab('singleplayer');
-      });
-      history.pushState({ section: "install" }, "", "/installation");
-    }
-    function showFaqSection() {
-      const installSection = document.getElementById("install-section");
-      animateOut(installSection, () => {
-        const faqSection = document.getElementById("faq-section");
-        animateIn(faqSection, "flex");
-      });
-      history.pushState({ section: "faq" }, "", "/faq");
-    }
-    function backToCoreFX() {
-      const installSection = document.getElementById("install-section");
-      animateOut(installSection, () => {
-        const corefxSection = document.getElementById("corefx-section");
-        animateIn(corefxSection, "flex");
-      });
-      history.pushState({ section: "corefx" }, "", "/corefx");
-    }
-    function backToInstallSection() {
-      const faqSection = document.getElementById("faq-section");
-      animateOut(faqSection, () => {
-        const installSection = document.getElementById("install-section");
-        animateIn(installSection, "flex");
-      });
-      history.pushState({ section: "install" }, "", "/installation");
-    }
-    function goBack() {
-      // Показываем главную секцию с анимацией (при переходах)
-      const sectionsToHide = ["corefx-section", "install-section", "faq-section"];
-      sectionsToHide.forEach(id => {
-        const sec = document.getElementById(id);
-        if(sec.style.display !== "none") {
-          animateOut(sec);
-        }
-      });
-      setTimeout(() => {
-        const mainSection = document.getElementById("main-section");
-        animateIn(mainSection, "flex");
-        window.scrollTo(0, 0);
-      }, 500);
-      history.pushState({ section: "home" }, "", "/");
-    }
+function animateIn(element, displayStyle = "flex") {
+  element.style.display = displayStyle;
+  element.classList.add("fade-in");
+  setTimeout(() => {
+    element.classList.remove("fade-in");
+  }, 500);
+}
 
-    // Обработчик переходов (назад/вперед)
-    window.onpopstate = function(event) {
-      const state = event.state;
-      if (state) {
-        switch (state.section) {
-          case "install":
-            showInstallSection();
-            break;
-          case "corefx":
-            showCorefxSection();
-            break;
-          case "faq":
-            showFaqSection();
-            break;
-          case "home":
-          default:
-            goBack();
-            break;
-        }
-      } else {
-        goBack();
-      }
-    };
+// Функции маршрутизации по секциям (без изменений)
+function showCorefxSection() {
+  const mainSection = document.getElementById("main-section");
+  animateOut(mainSection, () => {
+    const corefxSection = document.getElementById("corefx-section");
+    animateIn(corefxSection, "flex");
+  });
+  history.pushState({ section: "corefx" }, "", "/corefx");
+}
 
-    // Функция для показа вкладок внутри секции установки (без изменений)
-    function showTab(tabId) {
-      const tabs = document.querySelectorAll('.tab-content');
-      tabs.forEach(tab => tab.style.display = 'none');
-      const tabButtons = document.querySelectorAll('.tabs button');
-      tabButtons.forEach(btn => btn.classList.remove('active'));
-      document.getElementById(tabId).style.display = 'block';
-      document.getElementById(tabId + '-btn').classList.add('active');
-    }
+function showInstallSection() {
+  const corefxSection = document.getElementById("corefx-section");
+  animateOut(corefxSection, () => {
+    const installSection = document.getElementById("install-section");
+    animateIn(installSection, "flex");
+    showTab('singleplayer');
+  });
+  history.pushState({ section: "install" }, "", "/installation");
+}
 
-    // Галерея и лайтбокс (без изменений)
-    let currentSlide = 0;
-    let slides = [];
-    function initGallery() {
-      const galleryItems = document.querySelectorAll('.corefx-gallery img');
-      slides = [];
-      galleryItems.forEach((item, index) => {
-        if (item.getAttribute('data-video') === "true") {
-          slides.push({
-            type: 'video',
-            videoId: item.getAttribute('data-video-id'),
-            thumb: item.src
-          });
-        } else {
-          slides.push({
-            type: 'image',
-            src: item.src
-          });
-        }
-        item.addEventListener('click', () => {
-          openLightbox(index);
-        });
-      });
-    }
-    function openLightbox(index) {
-      currentSlide = index;
-      const lightbox = document.getElementById('lightbox');
-      lightbox.style.display = 'block';
-      lightbox.classList.add('fade-in');
-      showSlide(currentSlide);
-    }
-    function closeLightbox() {
-      const lightbox = document.getElementById('lightbox');
-      lightbox.classList.remove('fade-in');
-      lightbox.classList.add('fade-out');
-      setTimeout(() => {
-        lightbox.style.display = 'none';
-        lightbox.classList.remove('fade-out');
-        document.getElementById('lightbox-content').innerHTML = '';
-      }, 500);
-    }
-    function showSlide(index) {
-      if (index < 0) {
-        currentSlide = slides.length - 1;
-      } else if (index >= slides.length) {
-        currentSlide = 0;
-      } else {
-        currentSlide = index;
-      }
-      const slide = slides[currentSlide];
-      const container = document.getElementById('lightbox-content');
-      const newContent = document.createElement('div');
-      newContent.classList.add('slide-content');
-      if (slide.type === 'image') {
-        const img = document.createElement('img');
-        img.src = slide.src;
-        img.alt = 'Slide Image';
-        newContent.appendChild(img);
-      } else if (slide.type === 'video') {
-        const videoContainer = document.createElement('div');
-        videoContainer.classList.add('lightbox-video-container');
-        const iframe = document.createElement('iframe');
-        iframe.src = "https://www.youtube.com/embed/" + slide.videoId + "?autoplay=1";
-        iframe.setAttribute("frameborder", "0");
-        iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
-        iframe.setAttribute("allowfullscreen", "true");
-        videoContainer.appendChild(iframe);
-        newContent.appendChild(videoContainer);
-      }
-      const oldContent = container.firstElementChild;
-      container.appendChild(newContent);
-      setTimeout(() => {
-        newContent.style.opacity = 1;
-        if (oldContent) {
-          const iframes = oldContent.getElementsByTagName('iframe');
-          for (let i = 0; i < iframes.length; i++) {
-            iframes[i].src = "";
-          }
-          oldContent.style.opacity = 0;
-        }
-      }, 20);
-      setTimeout(() => {
-        if (oldContent) {
-          container.removeChild(oldContent);
-        }
-      }, 520);
-    }
-    function changeSlide(offset) {
-      showSlide(currentSlide + offset);
-    }
+function showFaqSection() {
+  const installSection = document.getElementById("install-section");
+  animateOut(installSection, () => {
+    const faqSection = document.getElementById("faq-section");
+    animateIn(faqSection, "flex");
+  });
+  history.pushState({ section: "faq" }, "", "/faq");
+}
 
-    // Изменённый обработчик загрузки: 
-    // если открывается главная страница, показываем её сразу без анимации
-    document.addEventListener("DOMContentLoaded", () => {
-      initGallery();
-      const path = window.location.pathname;
-      if (path === "/installation" || path === "/install") {
+function backToCoreFX() {
+  const installSection = document.getElementById("install-section");
+  animateOut(installSection, () => {
+    const corefxSection = document.getElementById("corefx-section");
+    animateIn(corefxSection, "flex");
+  });
+  history.pushState({ section: "corefx" }, "", "/corefx");
+}
+
+function backToInstallSection() {
+  const faqSection = document.getElementById("faq-section");
+  animateOut(faqSection, () => {
+    const installSection = document.getElementById("install-section");
+    animateIn(installSection, "flex");
+  });
+  history.pushState({ section: "install" }, "", "/installation");
+}
+
+function goBack() {
+  // Показываем главную секцию с анимацией (при переходах)
+  const sectionsToHide = ["corefx-section", "install-section", "faq-section"];
+  sectionsToHide.forEach(id => {
+    const sec = document.getElementById(id);
+    if(sec.style.display !== "none") {
+      animateOut(sec);
+    }
+  });
+  setTimeout(() => {
+    const mainSection = document.getElementById("main-section");
+    animateIn(mainSection, "flex");
+    window.scrollTo(0, 0);
+  }, 500);
+  history.pushState({ section: "home" }, "", "/");
+}
+
+// Обработчик переходов (назад/вперед)
+window.onpopstate = function(event) {
+  const state = event.state;
+  if (state) {
+    switch (state.section) {
+      case "install":
         showInstallSection();
-      } else if (path === "/corefx") {
+        break;
+      case "corefx":
         showCorefxSection();
-      } else if (path === "/faq") {
+        break;
+      case "faq":
         showFaqSection();
-      } else {
-        // Если главная страница, показываем ее без анимации при загрузке
-        const mainSection = document.getElementById("main-section");
-        mainSection.style.display = "flex";
-        mainSection.style.opacity = "1";
-        history.replaceState({ section: "home" }, "", "/");
-      }
+        break;
+      case "home":
+      default:
+        goBack();
+        break;
+    }
+  } else {
+    goBack();
+  }
+};
+
+// Функция для показа вкладок внутри секции установки (без изменений)
+function showTab(tabId) {
+  const tabs = document.querySelectorAll('.tab-content');
+  tabs.forEach(tab => tab.style.display = 'none');
+  const tabButtons = document.querySelectorAll('.tabs button');
+  tabButtons.forEach(btn => btn.classList.remove('active'));
+  document.getElementById(tabId).style.display = 'block';
+  document.getElementById(tabId + '-btn').classList.add('active');
+}
+
+// Галерея и лайтбокс (без изменений)
+let currentSlide = 0;
+let slides = [];
+
+function initGallery() {
+  const galleryItems = document.querySelectorAll('.corefx-gallery img');
+  slides = [];
+  galleryItems.forEach((item, index) => {
+    if (item.getAttribute('data-video') === "true") {
+      slides.push({
+        type: 'video',
+        videoId: item.getAttribute('data-video-id'),
+        thumb: item.src
+      });
+    } else {
+      slides.push({
+        type: 'image',
+        src: item.src
+      });
+    }
+    item.addEventListener('click', () => {
+      openLightbox(index);
     });
+  });
+}
+
+function openLightbox(index) {
+  currentSlide = index;
+  const lightbox = document.getElementById('lightbox');
+  lightbox.style.display = 'block';
+  lightbox.classList.add('fade-in');
+  showSlide(currentSlide);
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox.classList.remove('fade-in');
+  lightbox.classList.add('fade-out');
+  setTimeout(() => {
+    lightbox.style.display = 'none';
+    lightbox.classList.remove('fade-out');
+    document.getElementById('lightbox-content').innerHTML = '';
+  }, 500);
+}
+
+function showSlide(index) {
+  if (index < 0) {
+    currentSlide = slides.length - 1;
+  } else if (index >= slides.length) {
+    currentSlide = 0;
+  } else {
+    currentSlide = index;
+  }
+  const slide = slides[currentSlide];
+  const container = document.getElementById('lightbox-content');
+  const newContent = document.createElement('div');
+  newContent.classList.add('slide-content');
+  
+  if (slide.type === 'image') {
+    const img = document.createElement('img');
+    img.src = slide.src;
+    img.alt = 'Slide Image';
+    newContent.appendChild(img);
+  } else if (slide.type === 'video') {
+    const videoContainer = document.createElement('div');
+    videoContainer.classList.add('lightbox-video-container');
+    const iframe = document.createElement('iframe');
+    iframe.src = "https://www.youtube.com/embed/" + slide.videoId + "?autoplay=1";
+    iframe.setAttribute("frameborder", "0");
+    iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
+    iframe.setAttribute("allowfullscreen", "true");
+    videoContainer.appendChild(iframe);
+    newContent.appendChild(videoContainer);
+  }
+
+  const oldContent = container.firstElementChild;
+  container.appendChild(newContent);
+  
+  setTimeout(() => {
+    newContent.style.opacity = 1;
+    if (oldContent) {
+      const iframes = oldContent.getElementsByTagName('iframe');
+      for (let i = 0; i < iframes.length; i++) {
+        iframes[i].src = "";
+      }
+      oldContent.style.opacity = 0;
+    }
+  }, 20);
+  
+  setTimeout(() => {
+    if (oldContent) {
+      container.removeChild(oldContent);
+    }
+  }, 520);
+}
+
+function changeSlide(offset) {
+  showSlide(currentSlide + offset);
+}
+
+// Изменённый обработчик загрузки: 
+// если открывается главная страница, показываем её сразу без анимации
+document.addEventListener("DOMContentLoaded", () => {
+  initGallery();
+  const path = window.location.pathname;
+  if (path === "/installation" || path === "/install") {
+    showInstallSection();
+  } else if (path === "/corefx") {
+    showCorefxSection();
+  } else if (path === "/faq") {
+    showFaqSection();
+  } else {
+    // Если главная страница, показываем ее без анимации при загрузке
+    const mainSection = document.getElementById("main-section");
+    mainSection.style.display = "flex";
+    mainSection.style.opacity = "1";
+    history.replaceState({ section: "home" }, "", "/");
+  }
+});
+
   </script>
 </head>
 <body>
   <!-- Главный раздел (Home) -->
   <div id="main-section" class="container">
-    <img src="https://i.imgur.com/JfStkmR.gif" alt="Logo GIF" class="logo-placeholder" />
+    <img src="https://i.imgur.com/JfStkmR.gif" alt="Logo GIF" class="logo-placeholder" loading="lazy" />
     <div class="icons">
       <a href="javascript:void(0)" class="icon-link" onclick="showCorefxSection()">СoreFX</a>
       <a href="https://discord.gg/jK4SRmBqYt" class="icon-link">Discord</a>
@@ -567,21 +583,21 @@
       <img src="https://i.imgur.com/4g3BiDW.png" alt="Логотип" style="max-width:200px; display:block; margin:20px auto; background: transparent;" />
     </div>
     <div class="corefx-gallery">
-      <img src="https://i.imgur.com/sclszvM.png" alt="Screenshot 1">
-      <img src="https://i.imgur.com/VV4vy6H.jpeg" alt="Screenshot 2">
-      <img src="https://i.imgur.com/YoSvkFF.jpeg" alt="Screenshot 3">
-      <img src="https://i.imgur.com/FDnano1.jpeg" alt="Screenshot 4">
-      <img src="https://i.imgur.com/PgnkDDD.jpeg" alt="Screenshot 5">
-      <img src="https://i.imgur.com/yt3BCSo.jpeg" alt="Screenshot 6">
-      <img src="https://i.imgur.com/CPQVBtC.jpeg" alt="Screenshot 7">
-      <img src="https://i.imgur.com/sZhTBjW.jpeg" alt="Screenshot 8">
-      <img src="https://i.imgur.com/CYy4wx6.jpeg" alt="Screenshot 9">
-      <img src="https://i.imgur.com/zbe6Kdj.png" alt="Screenshot 10">
-      <img src="https://i.imgur.com/pv5R1XJ.jpeg" alt="Screenshot 11">
-      <img src="https://i.imgur.com/5i0i3au.png" alt="Screenshot 12">
-      <img src="https://img.youtube.com/vi/YlxUU4jMuGI/hqdefault.jpg" alt="Video 1" data-video="true" data-video-id="YlxUU4jMuGI">
-      <img src="https://img.youtube.com/vi/ZIs3BEJQno8/hqdefault.jpg" alt="Video 2" data-video="true" data-video-id="ZIs3BEJQno8">
-      <img src="https://img.youtube.com/vi/YqWausjw_ns/hqdefault.jpg" alt="Video 3" data-video="true" data-video-id="YqWausjw_ns">
+      <img src="https://i.imgur.com/sclszvM.png" alt="Screenshot 1" loading="lazy">
+      <img src="https://i.imgur.com/VV4vy6H.jpeg" alt="Screenshot 2" loading="lazy">
+      <img src="https://i.imgur.com/YoSvkFF.jpeg" alt="Screenshot 3" loading="lazy">
+      <img src="https://i.imgur.com/FDnano1.jpeg" alt="Screenshot 4" loading="lazy">
+      <img src="https://i.imgur.com/PgnkDDD.jpeg" alt="Screenshot 5" loading="lazy">
+      <img src="https://i.imgur.com/yt3BCSo.jpeg" alt="Screenshot 6" loading="lazy">
+      <img src="https://i.imgur.com/CPQVBtC.jpeg" alt="Screenshot 7" loading="lazy">
+      <img src="https://i.imgur.com/sZhTBjW.jpeg" alt="Screenshot 8" loading="lazy">
+      <img src="https://i.imgur.com/CYy4wx6.jpeg" alt="Screenshot 9" loading="lazy">
+      <img src="https://i.imgur.com/zbe6Kdj.png" alt="Screenshot 10" loading="lazy">
+      <img src="https://i.imgur.com/pv5R1XJ.jpeg" alt="Screenshot 11" loading="lazy">
+      <img src="https://i.imgur.com/5i0i3au.png" alt="Screenshot 12" loading="lazy">
+      <img src="https://img.youtube.com/vi/YlxUU4jMuGI/hqdefault.jpg" alt="Video 1" data-video="true" data-video-id="YlxUU4jMuGI" loading="lazy">
+      <img src="https://img.youtube.com/vi/ZIs3BEJQno8/hqdefault.jpg" alt="Video 2" data-video="true" data-video-id="ZIs3BEJQno8" loading="lazy">
+      <img src="https://img.youtube.com/vi/YqWausjw_ns/hqdefault.jpg" alt="Video 3" data-video="true" data-video-id="YqWausjw_ns" loading="lazy">
     </div>
     <div class="buttons-row">
       <a href="https://www.patreon.com/crxhvrd" class="download-button" target="_blank">Download CoreFX</a>
