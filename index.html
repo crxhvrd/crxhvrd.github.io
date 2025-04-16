@@ -333,7 +333,7 @@ function animateOut(element, callback) {
   setTimeout(() => {
     element.style.display = "none";
     element.classList.remove("fade-out");
-    if(callback) callback();
+    if (callback) callback();
   }, 500);
 }
 
@@ -345,14 +345,14 @@ function animateIn(element, displayStyle = "flex") {
   }, 500);
 }
 
-// Функции маршрутизации по секциям (без изменений)
+// Функции навигации через hash-роутинг
 function showCorefxSection() {
   const mainSection = document.getElementById("main-section");
   animateOut(mainSection, () => {
     const corefxSection = document.getElementById("corefx-section");
     animateIn(corefxSection, "flex");
   });
-  history.pushState({ section: "corefx" }, "", "/corefx");
+  window.location.hash = "corefx";
 }
 
 function showInstallSection() {
@@ -360,9 +360,9 @@ function showInstallSection() {
   animateOut(corefxSection, () => {
     const installSection = document.getElementById("install-section");
     animateIn(installSection, "flex");
-    showTab('singleplayer');
+    showTab("singleplayer");
   });
-  history.pushState({ section: "install" }, "", "/installation");
+  window.location.hash = "installation";
 }
 
 function showFaqSection() {
@@ -371,7 +371,7 @@ function showFaqSection() {
     const faqSection = document.getElementById("faq-section");
     animateIn(faqSection, "flex");
   });
-  history.pushState({ section: "faq" }, "", "/faq");
+  window.location.hash = "faq";
 }
 
 function backToCoreFX() {
@@ -380,7 +380,7 @@ function backToCoreFX() {
     const corefxSection = document.getElementById("corefx-section");
     animateIn(corefxSection, "flex");
   });
-  history.pushState({ section: "corefx" }, "", "/corefx");
+  window.location.hash = "corefx";
 }
 
 function backToInstallSection() {
@@ -389,15 +389,15 @@ function backToInstallSection() {
     const installSection = document.getElementById("install-section");
     animateIn(installSection, "flex");
   });
-  history.pushState({ section: "install" }, "", "/installation");
+  window.location.hash = "installation";
 }
 
 function goBack() {
-  // Показываем главную секцию с анимацией (при переходах)
+  // Скрываем все дополнительные секции и возвращаемся к главной
   const sectionsToHide = ["corefx-section", "install-section", "faq-section"];
   sectionsToHide.forEach(id => {
     const sec = document.getElementById(id);
-    if(sec.style.display !== "none") {
+    if (sec.style.display !== "none") {
       animateOut(sec);
     }
   });
@@ -406,44 +406,21 @@ function goBack() {
     animateIn(mainSection, "flex");
     window.scrollTo(0, 0);
   }, 500);
-  history.pushState({ section: "home" }, "", "/");
+  window.location.hash = "home";
 }
 
-// Обработчик переходов (назад/вперед)
-window.onpopstate = function(event) {
-  const state = event.state;
-  if (state) {
-    switch (state.section) {
-      case "install":
-        showInstallSection();
-        break;
-      case "corefx":
-        showCorefxSection();
-        break;
-      case "faq":
-        showFaqSection();
-        break;
-      case "home":
-      default:
-        goBack();
-        break;
-    }
-  } else {
-    goBack();
-  }
-};
-
-// Функция для показа вкладок внутри секции установки (без изменений)
+// Функция для показа вкладок в секции установки
 function showTab(tabId) {
   const tabs = document.querySelectorAll('.tab-content');
   tabs.forEach(tab => tab.style.display = 'none');
   const tabButtons = document.querySelectorAll('.tabs button');
   tabButtons.forEach(btn => btn.classList.remove('active'));
   document.getElementById(tabId).style.display = 'block';
+  // Кнопка для данного таба должна иметь id в формате: <tabId>-btn
   document.getElementById(tabId + '-btn').classList.add('active');
 }
 
-// Галерея и лайтбокс (без изменений)
+// Галерея и лайтбокс
 let currentSlide = 0;
 let slides = [];
 
@@ -517,7 +494,7 @@ function showSlide(index) {
     videoContainer.appendChild(iframe);
     newContent.appendChild(videoContainer);
   }
-
+  
   const oldContent = container.firstElementChild;
   container.appendChild(newContent);
   
@@ -543,9 +520,27 @@ function changeSlide(offset) {
   showSlide(currentSlide + offset);
 }
 
-// Изменённый обработчик загрузки: 
-// если открывается главная страница, показываем её сразу без анимации
+// Функция для ленивой загрузки изображений (lazy-loading)
+function lazyLoadImages() {
+  const lazyImages = document.querySelectorAll('.corefx-gallery img[loading="lazy"]');
+  const observer = new IntersectionObserver((entries, observerRef) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+        observerRef.unobserve(img);
+      }
+    });
+  });
+  lazyImages.forEach(img => observer.observe(img));
+}
+
+// Обработчик загрузки страницы
 document.addEventListener("DOMContentLoaded", () => {
+  // Проверяем hash и вызываем нужную функцию для перехода в раздел
   const hash = window.location.hash.substring(1);
   if (hash === "installation" || hash === "install") {
     showInstallSection();
@@ -554,19 +549,18 @@ document.addEventListener("DOMContentLoaded", () => {
   } else if (hash === "faq") {
     showFaqSection();
   } else {
-    // Показываем главную страницу
+    // Если hash пуст или "home" — показываем главную страницу
     const mainSection = document.getElementById("main-section");
     mainSection.style.display = "flex";
     mainSection.style.opacity = "1";
-    history.replaceState({ section: "home" }, "", "/");
+    window.location.hash = "home";
   }
-
-  initGallery();
-  document.addEventListener("DOMContentLoaded", lazyLoadImages);
   
+  initGallery();
+  lazyLoadImages();
 });
 
-  </script>
+ </script>
 </head>
 <body>
   <!-- Главный раздел (Home) -->
