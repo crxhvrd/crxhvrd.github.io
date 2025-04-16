@@ -347,66 +347,67 @@ function animateIn(element, displayStyle = "flex") {
 
 // Функции навигации через hash-роутинг
 function showCorefxSection() {
-  const mainSection = document.getElementById("main-section");
-  animateOut(mainSection, () => {
-    const corefxSection = document.getElementById("corefx-section");
-    animateIn(corefxSection, "flex");
-  });
+  // Скрываем главный раздел, если он виден
+  document.getElementById("main-section").style.display = "none";
+  // Если вдруг активна другая секция - анимируем её скрытие
+  hideAllSections(["install-section", "faq-section"]);
+  // Показываем секцию corefx
+  const corefxSection = document.getElementById("corefx-section");
+  animateIn(corefxSection, "flex");
   window.location.hash = "corefx";
 }
 
 function showInstallSection() {
-  const corefxSection = document.getElementById("corefx-section");
-  animateOut(corefxSection, () => {
-    const installSection = document.getElementById("install-section");
-    animateIn(installSection, "flex");
-    showTab("singleplayer");
-  });
+  // Скрываем главный раздел, если он виден
+  document.getElementById("main-section").style.display = "none";
+  // Если секция corefx видна — скрываем её, иначе пробуем скрыть другие
+  hideAllSections(["corefx-section", "faq-section"]);
+  const installSection = document.getElementById("install-section");
+  animateIn(installSection, "flex");
+  showTab("singleplayer");
   window.location.hash = "installation";
 }
 
 function showFaqSection() {
-  const installSection = document.getElementById("install-section");
-  animateOut(installSection, () => {
-    const faqSection = document.getElementById("faq-section");
-    animateIn(faqSection, "flex");
-  });
+  // Скрываем главный раздел, если он виден
+  document.getElementById("main-section").style.display = "none";
+  hideAllSections(["corefx-section", "install-section"]);
+  const faqSection = document.getElementById("faq-section");
+  animateIn(faqSection, "flex");
   window.location.hash = "faq";
 }
 
 function backToCoreFX() {
-  const installSection = document.getElementById("install-section");
-  animateOut(installSection, () => {
-    const corefxSection = document.getElementById("corefx-section");
-    animateIn(corefxSection, "flex");
-  });
+  hideAllSections(["install-section", "faq-section"]);
+  const corefxSection = document.getElementById("corefx-section");
+  animateIn(corefxSection, "flex");
   window.location.hash = "corefx";
 }
 
 function backToInstallSection() {
-  const faqSection = document.getElementById("faq-section");
-  animateOut(faqSection, () => {
-    const installSection = document.getElementById("install-section");
-    animateIn(installSection, "flex");
-  });
+  hideAllSections(["faq-section"]);
+  const installSection = document.getElementById("install-section");
+  animateIn(installSection, "flex");
   window.location.hash = "installation";
 }
 
 function goBack() {
   // Скрываем все дополнительные секции и возвращаемся к главной
-  const sectionsToHide = ["corefx-section", "install-section", "faq-section"];
-  sectionsToHide.forEach(id => {
-    const sec = document.getElementById(id);
-    if (sec.style.display !== "none") {
-      animateOut(sec);
+  hideAllSections(["corefx-section", "install-section", "faq-section"]);
+  const mainSection = document.getElementById("main-section");
+  animateIn(mainSection, "flex");
+  window.scrollTo(0, 0);
+  window.location.hash = "home";
+}
+
+// Функция для скрытия заданных секций
+function hideAllSections(ids) {
+  ids.forEach(id => {
+    const elem = document.getElementById(id);
+    if (elem) {
+      elem.style.display = "none";
     }
   });
-  setTimeout(() => {
-    const mainSection = document.getElementById("main-section");
-    animateIn(mainSection, "flex");
-    window.scrollTo(0, 0);
-  }, 500);
-  window.location.hash = "home";
 }
 
 // Функция для показа вкладок в секции установки
@@ -416,8 +417,9 @@ function showTab(tabId) {
   const tabButtons = document.querySelectorAll('.tabs button');
   tabButtons.forEach(btn => btn.classList.remove('active'));
   document.getElementById(tabId).style.display = 'block';
-  // Кнопка для данного таба должна иметь id в формате: <tabId>-btn
-  document.getElementById(tabId + '-btn').classList.add('active');
+  // Предполагается, что соответствующая кнопка имеет id вида: tabId + "-btn"
+  const btn = document.getElementById(tabId + '-btn');
+  if (btn) btn.classList.add('active');
 }
 
 // Галерея и лайтбокс
@@ -520,7 +522,7 @@ function changeSlide(offset) {
   showSlide(currentSlide + offset);
 }
 
-// Функция для ленивой загрузки изображений (lazy-loading)
+// Функция для ленивой загрузки изображений
 function lazyLoadImages() {
   const lazyImages = document.querySelectorAll('.corefx-gallery img[loading="lazy"]');
   const observer = new IntersectionObserver((entries, observerRef) => {
@@ -540,8 +542,12 @@ function lazyLoadImages() {
 
 // Обработчик загрузки страницы
 document.addEventListener("DOMContentLoaded", () => {
-  // Проверяем hash и вызываем нужную функцию для перехода в раздел
+  // Скрываем все секции, кроме главной (если это необходимо)
+  hideAllSections(["corefx-section", "install-section", "faq-section"]);
+  
+  // Читаем текущий hash
   const hash = window.location.hash.substring(1);
+  console.log("Загружен hash:", hash);
   if (hash === "installation" || hash === "install") {
     showInstallSection();
   } else if (hash === "corefx") {
@@ -549,7 +555,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } else if (hash === "faq") {
     showFaqSection();
   } else {
-    // Если hash пуст или "home" — показываем главную страницу
+    // Если hash пуст или "home" – показываем главный раздел
     const mainSection = document.getElementById("main-section");
     mainSection.style.display = "flex";
     mainSection.style.opacity = "1";
