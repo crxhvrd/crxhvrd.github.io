@@ -546,44 +546,44 @@ function changeSlide(offset) {
 // Изменённый обработчик загрузки: 
 // если открывается главная страница, показываем её сразу без анимации
 document.addEventListener("DOMContentLoaded", () => {
-  initGallery();
-  const path = window.location.pathname;
-  if (path === "/installation" || path === "/install") {
-    showInstallSection();
-  } else if (path === "/corefx") {
-    showCorefxSection();
-  } else if (path === "/faq") {
-    showFaqSection();
+  // Получаем параметры URL
+  const params = new URLSearchParams(window.location.search);
+  const pathParam = params.get("p");
+
+  if (pathParam) {
+    if (pathParam === "/installation" || pathParam === "/install") {
+      showInstallSection();
+    } else if (pathParam === "/corefx") {
+      showCorefxSection();
+    } else if (pathParam === "/faq") {
+      showFaqSection();
+    } else {
+      // Для остальных переходов - загрузка главной страницы
+      const mainSection = document.getElementById("main-section");
+      mainSection.style.display = "flex";
+      mainSection.style.opacity = "1";
+      history.replaceState({ section: "home" }, "", "/");
+    }
   } else {
-    // Если главная страница, показываем ее без анимации при загрузке
-    const mainSection = document.getElementById("main-section");
-    mainSection.style.display = "flex";
-    mainSection.style.opacity = "1";
-    history.replaceState({ section: "home" }, "", "/");
+    // Оригинальная логика для главной страницы и прочих URL
+    const path = window.location.pathname;
+    if (path === "/installation" || path === "/install") {
+      showInstallSection();
+    } else if (path === "/corefx") {
+      showCorefxSection();
+    } else if (path === "/faq") {
+      showFaqSection();
+    } else {
+      const mainSection = document.getElementById("main-section");
+      mainSection.style.display = "flex";
+      mainSection.style.opacity = "1";
+      history.replaceState({ section: "home" }, "", "/");
+    }
   }
-  
-  function lazyLoadImages() {
-  const lazyImages = document.querySelectorAll('.corefx-gallery img[loading="lazy"]');
-  const observer = new IntersectionObserver((entries, observerRef) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Принудительно зададим src, если он изначально был установлен через data-src
-        const img = entry.target;
-        if (img.dataset.src) {
-          img.src = img.dataset.src;
-          img.removeAttribute('data-src');
-        }
-        observerRef.unobserve(img);
-      }
-    });
-  });
 
-  lazyImages.forEach(img => observer.observe(img));
-}
-
-document.addEventListener("DOMContentLoaded", lazyLoadImages);
-  
-});
+  // Остальные вызовы, например, initGallery() и lazyLoadImages()
+  initGallery();
+  document.addEventListener("DOMContentLoaded", lazyLoadImages);
 
   </script>
 </head>
