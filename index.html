@@ -229,6 +229,31 @@ function setActiveNav(hash){
   const link=document.querySelector(`.nav-link[href='${hash.startsWith('#')?hash:'#'+hash}']`);if(link)link.classList.add('active');
 }
 
+let lazyObs;
+function initLazy() {
+  lazyObs = new IntersectionObserver((entries, obs) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const img = e.target;
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+        obs.unobserve(img);
+      }
+    });
+  }, { rootMargin: '300px' });
+
+  qsa('img[data-src]').forEach(img => lazyObs.observe(img));
+}
+
+/* при уходе со страницы Showcase очищаем src → RAM свободна */
+function releaseGalleryMemory() {
+  qsa('#showcase-section img:not([data-video])').forEach(img => {
+    if (img.src) { img.dataset.src = img.src; img.removeAttribute('src'); }
+  });
+}
+
 /* ---------- оборачиваем видео-миниатюры ---------- */
 function wrapVideoThumbs(){
   document.querySelectorAll('.showcase-gallery img[data-video="true"]').forEach(img=>{
@@ -406,21 +431,21 @@ window.addEventListener('hashchange',route);
   <!-- Секция CoreFX -->
   <div id="showcase-section">
     <div class="showcase-gallery">
-      <img src="https://i.imgur.com/sclszvM.png"  loading="lazy">
-      <img src="https://i.imgur.com/VV4vy6H.jpeg" loading="lazy">
-      <img src="https://i.imgur.com/YoSvkFF.jpeg" loading="lazy">
-      <img src="https://i.imgur.com/FDnano1.jpeg" loading="lazy">
-      <img src="https://i.imgur.com/PgnkDDD.jpeg" loading="lazy">
-      <img src="https://i.imgur.com/yt3BCSo.jpeg" loading="lazy">
-      <img src="https://i.imgur.com/CPQVBtC.jpeg" loading="lazy">
-      <img src="https://i.imgur.com/sZhTBjW.jpeg" loading="lazy">
-      <img src="https://i.imgur.com/CYy4wx6.jpeg" loading="lazy">
-      <img src="https://i.imgur.com/zbe6Kdj.png"  loading="lazy">
-      <img src="https://i.imgur.com/pv5R1XJ.jpeg" loading="lazy">
-      <img src="https://i.imgur.com/5i0i3au.png"  loading="lazy">
-      <img src="https://img.youtube.com/vi/YlxUU4jMuGI/hqdefault.jpg" data-video="true" data-video-id="YlxUU4jMuGI" loading="lazy">
-      <img src="https://img.youtube.com/vi/ZIs3BEJQno8/hqdefault.jpg" data-video="true" data-video-id="ZIs3BEJQno8" loading="lazy">
-      <img src="https://img.youtube.com/vi/YqWausjw_ns/hqdefault.jpg" data-video="true" data-video-id="YqWausjw_ns" loading="lazy">
+      <img src="https://i.imgur.com/sclszvM.png"  loading="lazy" alt="">
+      <img src="https://i.imgur.com/VV4vy6H.jpeg" loading="lazy" alt="">
+      <img src="https://i.imgur.com/YoSvkFF.jpeg" loading="lazy" alt="">
+      <img src="https://i.imgur.com/FDnano1.jpeg" loading="lazy" alt="">
+      <img src="https://i.imgur.com/PgnkDDD.jpeg" loading="lazy" alt="">
+      <img src="https://i.imgur.com/yt3BCSo.jpeg" loading="lazy" alt="">
+      <img src="https://i.imgur.com/CPQVBtC.jpeg" loading="lazy" alt="">
+      <img src="https://i.imgur.com/sZhTBjW.jpeg" loading="lazy" alt="">
+      <img src="https://i.imgur.com/CYy4wx6.jpeg" loading="lazy" alt="">
+      <img src="https://i.imgur.com/zbe6Kdj.png"  loading="lazy" alt="">
+      <img src="https://i.imgur.com/pv5R1XJ.jpeg" loading="lazy" alt="">
+      <img src="https://i.imgur.com/5i0i3au.png"  loading="lazy" alt="">
+      <img src="https://img.youtube.com/vi/YlxUU4jMuGI/hqdefault.jpg" data-video="true" data-video-id="YlxUU4jMuGI" loading="lazy" alt="">
+      <img src="https://img.youtube.com/vi/ZIs3BEJQno8/hqdefault.jpg" data-video="true" data-video-id="ZIs3BEJQno8" loading="lazy" alt="">
+      <img src="https://img.youtube.com/vi/YqWausjw_ns/hqdefault.jpg" data-video="true" data-video-id="YqWausjw_ns" loading="lazy" alt="">
     </div>
   </div>
 
@@ -753,10 +778,10 @@ window.addEventListener('hashchange',route);
 
           <!-- миниатюры: клик по ним меняет главный скриншот -->
           <div class="changelog-thumb-row">
-            <img src="https://i.imgur.com/sclszvM.png"  alt="">
-            <img src="https://i.imgur.com/VV4vy6H.jpeg" alt="">
-            <img src="https://i.imgur.com/YoSvkFF.jpeg" alt="">
-            <img src="https://i.imgur.com/PgnkDDD.jpeg" alt="">
+            <img src="https://i.imgur.com/sclszvM.png"  loading="lazy" alt="">
+            <img src="https://i.imgur.com/VV4vy6H.jpeg" loading="lazy" alt="">
+            <img src="https://i.imgur.com/YoSvkFF.jpeg" loading="lazy" alt="">
+            <img src="https://i.imgur.com/PgnkDDD.jpeg" loading="lazy" alt="">
           </div>
         </div>
 
