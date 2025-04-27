@@ -106,12 +106,75 @@ li::marker{color:var(--accent);font-weight:bold}
 .showcase-gallery{display:grid;gap:12px;width:100%;max-width:1400px;margin:0 auto;grid-template-columns:repeat(auto-fill,minmax(var(--unit),1fr));grid-auto-rows:calc(var(--unit)*var(--ratio));grid-auto-flow:dense}
 .showcase-gallery img{width:100%;height:100%;object-fit:cover;border-radius:6px;cursor:pointer;transition:transform .25s,box-shadow .25s}
 .showcase-gallery img:hover{
-  transform:scale(1.04);
+  transform:scale(1.00);
   box-shadow:0 6px 18px var(--accent-alpha);
 }
 .showcase-gallery img:nth-child(9n+1){grid-column:span 2;grid-row:span 2}
 .showcase-gallery img:nth-child(9n+3),.showcase-gallery img:nth-child(9n+7){grid-row:span 2}
 .showcase-gallery img:nth-child(9n+5){grid-column:span 2}
+
+.showcase-gallery img[data-video="true"]{
+  aspect-ratio:16/9;      /* фиксированное соотношение сторон */
+  object-fit:cover;       /* обрезает верх/низ → полос не будет */
+  
+  /* лёгкий блюр + затемнение, чтобы стрелка выделялась */
+  filter:blur(7px) brightness(.7);
+  transition:filter .25s,transform .25s;
+  
+  /* нужны для псевдо-элементов */
+  display:block;
+  position:relative;
+}
+
+/* при ховере делаем картинку чёткой */
+.showcase-gallery img[data-video="true"]:hover{
+  filter:blur(0) brightness(1);
+}
+
+/* 2.  Полупрозрачный круг-фон под стрелкой */
+.showcase-gallery img[data-video="true"]::before{
+  content:"";
+  position:absolute;inset:0;
+  margin:auto;           /* центрирование */
+  width:70px;height:70px;
+  background:rgba(0,0,0,.45);
+  border-radius:50%;
+  pointer-events:none;   /* чтобы клик шел сквозь иконку */
+}
+
+/* 3.  Сама «Play»-стрелка */
+.showcase-gallery img[data-video="true"]::after{
+  content:"";
+  position:absolute;top:50%;left:50%;
+  transform:translate(-40%,-50%); /* небольшая подправка по Х */
+  border-left:28px solid #fff;    /* «треугольник» */
+  border-top:18px solid transparent;
+  border-bottom:18px solid transparent;
+  pointer-events:none;
+}
+
+/* видео-превью — обёртка */
+.video-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:6px}
+.video-thumb img{width:100%;height:100%;object-fit:cover;filter:blur(5px) brightness(.7);transition:filter .25s,transform .25s}
+.video-thumb:hover img{filter:blur(0) brightness(1);transform:scale(1.00)}
+/* play-icon */
+.play-icon{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:70px;height:70px;border-radius:50%;background:rgba(0,0,0,.45);
+  display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2
+}
+.play-icon{transition:opacity .25s,transform .25s;opacity:1}
+
+/* при наведении на сам контейнер-превью скрываем иконку */
+.video-thumb:hover .play-icon{
+  opacity:0;           /* полностью прозрачная */
+  transform:translate(-50%,-50%) scale(.7); /* лёгкое уменьшение */
+}
+.showcase-gallery .video-thumb:nth-child(9n+1){grid-column:span 2;grid-row:span 2}
+.showcase-gallery .video-thumb:nth-child(9n+3),
+.showcase-gallery .video-thumb:nth-child(9n+7){grid-row:span 2}
+.showcase-gallery .video-thumb:nth-child(9n+5){grid-column:span 2}
+.play-icon::before{content:"";border-left:26px solid #fff;border-top:17px solid transparent;border-bottom:17px solid transparent}
 
 /* ─────────  changelog preview  ───────── */
 .changelog-preview{width:100%;max-width:1200px;margin:0 auto;display:flex;flex-direction:column;align-items:center}
@@ -157,49 +220,84 @@ li::marker{color:var(--accent);font-weight:bold}
   </style>
 
   <script>
-/* ------------------------------ helpers ------------------------------ */
+/* ---------- helpers ---------- */
 let showcaseTemplate="",homeTemplate="";
-const hideAll=i=>i.forEach(id=>{const e=document.getElementById(id);if(e)e.style.display="none"});
-function setActiveNav(h){
+const hideAll = ids => ids.forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none'});
+const show    = el  => {el.style.display='flex';el.classList.add('fade-in');setTimeout(()=>el.classList.remove('fade-in'),500)};
+function setActiveNav(hash){
   document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-  const t=document.querySelector(`.nav-link[href='${h.startsWith('#')?h:'#'+h}']`);
-  if(t)t.classList.add('active');
+  const link=document.querySelector(`.nav-link[href='${hash.startsWith('#')?hash:'#'+hash}']`);if(link)link.classList.add('active');
 }
-const show=e=>{e.style.display='flex';e.classList.add('fade-in');setTimeout(()=>e.classList.remove('fade-in'),500)};
 
-/* ------------------------------ router ------------------------------ */
+/* ---------- оборачиваем видео-миниатюры ---------- */
+function wrapVideoThumbs(){
+  document.querySelectorAll('.showcase-gallery img[data-video="true"]').forEach(img=>{
+    if(img.parentElement.classList.contains('video-thumb')) return;                 // уже обёрнут
+    const wrap=document.createElement('div');wrap.className='video-thumb';
+    const icon=document.createElement('span');icon.className='play-icon';
+    img.parentNode.insertBefore(wrap,img);wrap.appendChild(img);wrap.appendChild(icon);
+  });
+}
+
+/* ---------- gallery / lightbox ---------- */
+function initGallery(){
+  document.querySelectorAll('.showcase-gallery img').forEach((el,i)=>el.addEventListener('click',()=>openLB(i)));
+}
+let cur=0;
+function openLB(i){cur=i;document.getElementById('lightbox').style.display='block';showSlide(i);}
+const closeLB=()=>{document.getElementById('lightbox').style.display='none';document.getElementById('lightbox-content').innerHTML='';};
+function showSlide(i){
+  const imgs=[...document.querySelectorAll('.showcase-gallery img')];
+  i=(i+imgs.length)%imgs.length;cur=i;
+  const box=document.getElementById('lightbox-content');
+  const el=imgs[i];
+  if(el.dataset.video){
+    box.innerHTML=`<div class="lightbox-video-container"><iframe src="https://www.youtube.com/embed/${el.dataset.videoId}?autoplay=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
+  }else{
+    box.innerHTML=`<img src="${el.src}" alt="">`;
+  }
+}
+
+/* ---------- router ---------- */
 function route(){
-  const raw=location.hash||"#home";
-  const h=raw.slice(1).toLowerCase()||"home";
+  const h=(location.hash||'#home').slice(1).toLowerCase()||'home';
   document.getElementById('top-nav').style.display=h==='home'?'none':'block';
   setActiveNav('#'+h);
 
+  /* выгружаем тяжёлую галерею если уходим */
   if(h!=='showcase'){
-    const s=document.getElementById('showcase-section');
-    if(s&&s.style.display==='flex'){
-      const g=s.querySelector('.showcase-gallery');
-      if(g&&!showcaseTemplate)showcaseTemplate=g.innerHTML;
-      if(g)g.innerHTML="";
-    }
+    const g=document.querySelector('#showcase-section .showcase-gallery');
+    if(g&&g.innerHTML&&!showcaseTemplate){showcaseTemplate=g.innerHTML;}
+    if(g)g.innerHTML='';
   }
   if(h!=='home'){
     const m=document.getElementById('main-section');
-    if(m&&m.style.display==='flex'){
-      if(!homeTemplate)homeTemplate=m.innerHTML;
-      m.innerHTML="";
-    }
+    if(m&&m.innerHTML&&!homeTemplate){homeTemplate=m.innerHTML;}
+    if(m)m.innerHTML='';
   }
+
   hideAll(['main-section','showcase-section','install-section','faq-section','changelog-section']);
+
   switch(h){
     case 'showcase':{
       const s=document.getElementById('showcase-section');
       const g=s.querySelector('.showcase-gallery');
-      if(g&&g.innerHTML.trim()===''&&showcaseTemplate){g.innerHTML=showcaseTemplate;initGallery();}
-      show(s);break;}
+      if(g&&g.innerHTML.trim()===''&&showcaseTemplate){
+        g.innerHTML=showcaseTemplate;
+        initGallery();
+        wrapVideoThumbs();                                    /* важно */
+      }
+      show(s);break;
+    }
     case 'installation':
-    case 'install':show(document.getElementById('install-section'));break;
-    case 'faq':show(document.getElementById('faq-section'));break;
-    case 'changelog':show(document.getElementById('changelog-section'));break;
+    case 'install': show(document.getElementById('install-section')); break;
+    case 'faq':       show(document.getElementById('faq-section'));   break;
+    case 'changelog': {
+  const s = document.getElementById('changelog-section');
+  show(s);
+  initChangelog();           // ← навешиваем обработчики
+  break;
+}
     default:{
       const m=document.getElementById('main-section');
       if(m&&m.innerHTML.trim()===''&&homeTemplate)m.innerHTML=homeTemplate;
@@ -208,30 +306,6 @@ function route(){
   }
 }
 
-/* ------------------------------ show tab ------------------------------ */ 
-function showTab(id){
-  document.querySelectorAll('.tab-content').forEach(tc=>tc.style.display='none');
-  document.querySelectorAll('.tab-button').forEach(btn=>btn.classList.remove('active'));
-  const tab=document.getElementById(id);
-  const tabBtn=document.getElementById(id+'-btn');
-  if(tab)tab.style.display='block';
-  if(tabBtn)tabBtn.classList.add('active');
-}
-
-/* ------------------------------ showcase lightbox ------------------------------ */
-function initGallery(){
-  document.querySelectorAll('.showcase-gallery img').forEach((it,i)=>it.addEventListener('click',()=>openLB(i)));
-}
-let cur=0;
-function openLB(i){cur=i;document.getElementById('lightbox').style.display='block';showSlide(i);}
-const closeLB=()=>{document.getElementById('lightbox').style.display='none';document.getElementById('lightbox-content').innerHTML='';};
-function showSlide(i){
-  const imgs=[...document.querySelectorAll('.showcase-gallery img')];
-  i=(i+imgs.length)%imgs.length;cur=i;
-  document.getElementById('lightbox-content').innerHTML=`<img src='${imgs[i].src}'/>`;
-}
-
-/* ------------------------------ changelog thumbs ------------------------------ */
 function initChangelog(){
   document.querySelectorAll('.changelog-entry').forEach(entry=>{
     const main=entry.querySelector('.changelog-main');
@@ -247,18 +321,30 @@ function initChangelog(){
   });
 }
 
-/* ------------------------------ accent / gradient scroll animation ------------------------------ */
+function showTab(id){
+  /* скрыть все вкладки и убрать активность с кнопок */
+  document.querySelectorAll('.tab-content')
+          .forEach(c => c.style.display = 'none');
+  document.querySelectorAll('.tab-button')
+          .forEach(b => b.classList.remove('active'));
+
+  /* показать выбранную */
+  const tab  = document.getElementById(id);
+  const btn  = document.getElementById(id + '-btn');
+  if(tab) tab.style.display = 'block';
+  if(btn) btn.classList.add('active');
+}
+
 function updateAccentColor(){
-  const maxScroll   = document.documentElement.scrollHeight - innerHeight;
-  const distance    = Math.max(maxScroll, 1000);    // «длина» за которую цвет пройдет путь blue→gold
-  const t           = Math.min(window.scrollY / distance, 1);  // 0‥1
+  const maxScroll  = document.documentElement.scrollHeight - innerHeight;
+  const distance   = Math.max(maxScroll, 1000);          // «длина» градиента
+  const t          = Math.min(window.scrollY / distance, 1); // 0‥1
 
-  // rgb
-  const col1  = [ 10,194,255];
-  const col2  = [30,255,180];
+  /* из какого-в какой цвет интерполируем */
+  const col1 = [10,194,255];   // голубой
+  const col2 = [30,255,180];   // бирюзово-зеленый
 
-  // линейная интерполяция
-  const mix   = col1.map((v,i)=>Math.round(v + (col2[i]-v)*t));
+  const mix  = col1.map((v,i)=>Math.round(v + (col2[i]-v)*t));
   const accent      = `rgb(${mix[0]},${mix[1]},${mix[2]})`;
   const accentAlpha = `rgba(${mix[0]},${mix[1]},${mix[2]},1.0)`;
 
@@ -267,15 +353,20 @@ function updateAccentColor(){
   root.style.setProperty('--accent-alpha', accentAlpha);
 }
 
+/* навешиваем один раз — прокручиваем страницу → меняем цвет */
+window.addEventListener('scroll', updateAccentColor, { passive:true });
 
-window.addEventListener('scroll',updateAccentColor,{passive:true});
-
-/* ------------------------------ boot ------------------------------ */
+/* ---------- boot ---------- */
 window.addEventListener('DOMContentLoaded',()=>{
   homeTemplate=document.getElementById('main-section').innerHTML;
   showcaseTemplate=document.querySelector('#showcase-section .showcase-gallery').innerHTML;
+
   hideAll(['main-section','showcase-section','install-section','faq-section','changelog-section']);
-  route();initGallery();initChangelog();updateAccentColor();
+  route();
+  initGallery();
+  initChangelog(); 
+  wrapVideoThumbs();                         /* нужно при первой загрузке */
+
 });
 window.addEventListener('hashchange',route);
   </script>
