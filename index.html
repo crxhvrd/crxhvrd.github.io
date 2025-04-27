@@ -13,8 +13,14 @@
 
   <style>
 :root{
+  /* базовый цвет – меняйте только его */
   --accent:#0ac2ff;
-  --accent-alpha:rgba(10,194,255,.9);
+
+  /* 90 % базового цвета + 10 % прозрачности (поддерживается в Chrome 111+, Firefox 111+)  */
+  --accent-alpha:color-mix(in srgb, var(--accent) 90%, transparent);
+
+  /* приглушённый вариант – 55 % насыщенности */
+  --accent-dim:color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 /* ─────────  base  ───────── */
@@ -56,43 +62,39 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}
 .nav-link:hover::after{transform:translateX(-50%) scaleX(1)}
 .nav-link.active{color:#fff}
 .nav-link.active::after{transform:translateX(-50%) scaleX(1)}
-.nav-logo{flex:0 0 auto;height:42px;width:auto;pointer-events:none;filter:drop-shadow(0 0 4px rgba(10,194,255,.7))}
+.nav-logo{
+  flex:0 0 auto;
+  height:42px;
+  width:auto;
+  pointer-events:none;
+  filter:drop-shadow(0 0 10px var(--accent-alpha));
+}
 
-/* ── единый стиль для code и li ── */
+/* ── unified style for code & li ── */
 code{
   color:var(--accent);
   background:rgba(10,194,255,.12);
-  padding:2px 4px;
-  border-radius:4px;
-  font-size:90%;
+  padding:2px 4px;border-radius:4px;font-size:90%;
 }
-li{
-  margin:.5em 0;
-  list-style-position:inside;
-}
-li::marker{
-  color:var(--accent);
-  font-weight:bold;
-}
+li{margin:.5em 0;list-style-position:inside}
+li::marker{color:var(--accent);font-weight:bold}
 .page-content a{
-  color:var(--accent);
-  text-decoration:underline;
-  transition:color .2s;
+  color:var(--accent);text-decoration:underline;transition:color .2s;
 }
-.page-content a:hover{color:var(--accent-alpha);}
+.page-content a:hover{color:var(--accent-alpha)}
 
 /* ─────────  backgrounds  ───────── */
 @keyframes gradientAnim{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
 #showcase-section,#changelog-section{
   display:none;flex-direction:column;align-items:center;gap:40px;
   padding:90px 20px 20px;min-height:100vh;
-  background:radial-gradient(circle at center,var(--accent-alpha)10%,#000 80%);
+  background:radial-gradient(circle at center,var(--accent-alpha) 10%,#000 80%);
   background-size:200% 200%;animation:gradientAnim 10s ease infinite alternate;
 }
 #install-section,#faq-section{
   display:none;flex-direction:column;align-items:center;gap:40px;
   padding:90px 20px;min-height:100vh;
-  background:radial-gradient(circle at center,var(--accent-alpha)10%,#000 80%);
+  background:radial-gradient(circle at center,var(--accent-alpha) 10%,#000 80%);
   background-size:200% 200%;animation:gradientAnim 10s ease infinite alternate;
 }
 #main-section{height:100vh;display:none;flex-direction:column;justify-content:center;align-items:center;overflow:hidden}
@@ -103,7 +105,10 @@ li::marker{
 .footer-placeholder{font-size:12px;color:#666;margin-bottom:20px}
 .showcase-gallery{display:grid;gap:12px;width:100%;max-width:1400px;margin:0 auto;grid-template-columns:repeat(auto-fill,minmax(var(--unit),1fr));grid-auto-rows:calc(var(--unit)*var(--ratio));grid-auto-flow:dense}
 .showcase-gallery img{width:100%;height:100%;object-fit:cover;border-radius:6px;cursor:pointer;transition:transform .25s,box-shadow .25s}
-.showcase-gallery img:hover{transform:scale(1.04);box-shadow:0 6px 18px rgba(10,194,255,.85)}
+.showcase-gallery img:hover{
+  transform:scale(1.04);
+  box-shadow:0 6px 18px var(--accent-alpha);
+}
 .showcase-gallery img:nth-child(9n+1){grid-column:span 2;grid-row:span 2}
 .showcase-gallery img:nth-child(9n+3),.showcase-gallery img:nth-child(9n+7){grid-row:span 2}
 .showcase-gallery img:nth-child(9n+5){grid-column:span 2}
@@ -111,17 +116,10 @@ li::marker{
 /* ─────────  changelog preview  ───────── */
 .changelog-preview{width:100%;max-width:1200px;margin:0 auto;display:flex;flex-direction:column;align-items:center}
 .changelog-preview img.changelog-main{
-  width:100%;
-  max-height:60vh;
-  height:auto;
-  object-fit:cover;
-  border-radius:10px
+  width:100%;max-height:60vh;height:auto;object-fit:cover;border-radius:10px
 }
 .changelog-thumb-row{display:flex;gap:6px;margin-top:8px;overflow-x:auto;padding-bottom:4px}
-.changelog-thumb-row img{
-  width:160px;flex:0 0 auto;opacity:.6;border-radius:10px;cursor:pointer;
-  transition:opacity .2s
-}
+.changelog-thumb-row img{width:160px;flex:0 0 auto;opacity:.6;border-radius:10px;cursor:pointer;transition:opacity .2s}
 .changelog-thumb-row img:hover{opacity:.9}
 .changelog-thumb-row img.active{opacity:1;box-shadow:0 0 0 0px var(--accent-alpha)}
 
@@ -210,18 +208,14 @@ function route(){
   }
 }
 
-
 /* ------------------------------ show tab ------------------------------ */ 
 function showTab(id){
-  /* скрыть все контейнеры и снять .active */
   document.querySelectorAll('.tab-content').forEach(tc=>tc.style.display='none');
   document.querySelectorAll('.tab-button').forEach(btn=>btn.classList.remove('active'));
-
-  /* показать выбранный */
-  const tab      = document.getElementById(id);
-  const tabBtn   = document.getElementById(id+'-btn');
-  if(tab)   tab.style.display='block';
-  if(tabBtn) tabBtn.classList.add('active');
+  const tab=document.getElementById(id);
+  const tabBtn=document.getElementById(id+'-btn');
+  if(tab)tab.style.display='block';
+  if(tabBtn)tabBtn.classList.add('active');
 }
 
 /* ------------------------------ showcase lightbox ------------------------------ */
@@ -240,13 +234,12 @@ function showSlide(i){
 /* ------------------------------ changelog thumbs ------------------------------ */
 function initChangelog(){
   document.querySelectorAll('.changelog-entry').forEach(entry=>{
-    const main = entry.querySelector('.changelog-main');
-    const thumbs = entry.querySelectorAll('.changelog-thumb-row img');
-    // отметить первый как активный
-    if(thumbs.length) thumbs[0].classList.add('active');
+    const main=entry.querySelector('.changelog-main');
+    const thumbs=entry.querySelectorAll('.changelog-thumb-row img');
+    if(thumbs.length)thumbs[0].classList.add('active');
     thumbs.forEach(t=>{
       t.addEventListener('click',()=>{
-        main.src = t.src;
+        main.src=t.src;
         thumbs.forEach(x=>x.classList.remove('active'));
         t.classList.add('active');
       });
@@ -254,12 +247,33 @@ function initChangelog(){
   });
 }
 
+/* ------------------------------ accent / gradient scroll animation ------------------------------ */
+function updateAccentColor(){
+  const maxScroll   = document.documentElement.scrollHeight - innerHeight;
+  const distance    = Math.max(maxScroll, 1000);    // «длина» за которую цвет пройдет путь blue→gold
+  const t           = Math.min(window.scrollY / distance, 1);  // 0‥1
+
+  // rgb
+  const col1  = [ 10,194,255];
+  const col2  = [30,255,180];
+
+  // линейная интерполяция
+  const mix   = col1.map((v,i)=>Math.round(v + (col2[i]-v)*t));
+  const accent      = `rgb(${mix[0]},${mix[1]},${mix[2]})`;
+  const accentAlpha = `rgba(${mix[0]},${mix[1]},${mix[2]},1.0)`;
+
+  const root = document.documentElement;
+  root.style.setProperty('--accent',       accent);
+  root.style.setProperty('--accent-alpha', accentAlpha);
+}
+window.addEventListener('scroll',updateAccentColor,{passive:true});
+
 /* ------------------------------ boot ------------------------------ */
 window.addEventListener('DOMContentLoaded',()=>{
   homeTemplate=document.getElementById('main-section').innerHTML;
   showcaseTemplate=document.querySelector('#showcase-section .showcase-gallery').innerHTML;
   hideAll(['main-section','showcase-section','install-section','faq-section','changelog-section']);
-  route();initGallery();initChangelog();
+  route();initGallery();initChangelog();updateAccentColor();
 });
 window.addEventListener('hashchange',route);
   </script>
