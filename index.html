@@ -207,6 +207,20 @@ function route(){
   }
 }
 
+
+/* ------------------------------ show tab ------------------------------ */ 
+function showTab(id){
+  /* скрыть все контейнеры и снять .active */
+  document.querySelectorAll('.tab-content').forEach(tc=>tc.style.display='none');
+  document.querySelectorAll('.tab-button').forEach(btn=>btn.classList.remove('active'));
+
+  /* показать выбранный */
+  const tab      = document.getElementById(id);
+  const tabBtn   = document.getElementById(id+'-btn');
+  if(tab)   tab.style.display='block';
+  if(tabBtn) tabBtn.classList.add('active');
+}
+
 /* ------------------------------ showcase lightbox ------------------------------ */
 function initGallery(){
   document.querySelectorAll('.showcase-gallery img').forEach((it,i)=>it.addEventListener('click',()=>openLB(i)));
