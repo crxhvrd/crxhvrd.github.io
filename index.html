@@ -217,6 +217,22 @@ li::marker{color:var(--accent);font-weight:bold}
 .prev:hover,.next:hover{background:rgba(255,255,255,.4)}
 .prev{left:0;border-radius:0 3px 3px 0}
 .next{right:0;border-radius:3px 0 0 3px}
+
+.showcase-container {
+  max-width: 1400px;             /* больше, чем для install-container */
+  margin: 0 auto;
+  background: rgba(20,20,20,.6); /* как в других секциях */
+  border: 1px solid #111;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 0 20px rgba(0,0,0,.3);
+}
+
+#showcase-section .showcase-gallery {
+  width: 100%;
+  /* max-width уже задаётся контейнером */
+}
+
   </style>
 
   <script>
@@ -430,6 +446,7 @@ window.addEventListener('hashchange',route);
 
   <!-- Секция CoreFX -->
   <div id="showcase-section">
+  <div class="showcase-container">
     <div class="showcase-gallery">
       <img src="https://i.imgur.com/sclszvM.png"  loading="lazy" alt="">
       <img src="https://i.imgur.com/VV4vy6H.jpeg" loading="lazy" alt="">
@@ -447,12 +464,19 @@ window.addEventListener('hashchange',route);
       <img src="https://img.youtube.com/vi/ZIs3BEJQno8/hqdefault.jpg" data-video="true" data-video-id="ZIs3BEJQno8" loading="lazy" alt="">
       <img src="https://img.youtube.com/vi/YqWausjw_ns/hqdefault.jpg" data-video="true" data-video-id="YqWausjw_ns" loading="lazy" alt="">
     </div>
+	</div>
   </div>
 
   <!-- Секция установки (Requirements + Instructions) -->
   <div id="install-section">
     <div class="install-container">
       <div class="page-content">
+	    <h2>Before you install</h2>
+		<p>
+          Mixing CoreFX with other graphics mods is not recommended, not supported and you can potentially break your game.
+          Also CoreFX developers have all rights to ignore you in case you mixed CoreFX with something else.
+		  By using CoreFX you automatically agree with LICENSE and these simple rules.
+        </p>
         <h2>Requirements</h2>
         <p>
           Before installing and using CoreFX and CoreENB, please ensure that your system and game environment meet the following requirements.
