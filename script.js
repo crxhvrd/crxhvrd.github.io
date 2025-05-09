@@ -7,8 +7,6 @@ function setActiveNav(hash){
   const link=document.querySelector(`.nav-link[href='${hash.startsWith('#')?hash:'#'+hash}']`);if(link)link.classList.add('active');
 }
 
-// Lazy loading and memory release might need review if other sections rely heavily on them.
-// For the new showcase, they are not directly used.
 let lazyObs;
 function initLazy() {
   lazyObs = new IntersectionObserver((entries, obs) => {
@@ -29,7 +27,7 @@ function initLazy() {
 
 function releaseGalleryMemory() {
   document.querySelectorAll('#showcase-section img:not([data-video])').forEach(img => {
-    if (img.src && !img.closest('#fullscreen-slideshow-container')) { // Avoid affecting new slideshow
+    if (img.src && !img.closest('#fullscreen-slideshow-container')) { 
         img.dataset.src = img.src; img.removeAttribute('src');
     }
   });
@@ -68,7 +66,7 @@ function showSlide(i){
 let fullscreenSlideshowInterval;
 let fullscreenSlideshowImages = [];
 let currentSlideIndex = 0;
-const SLIDESHOW_INTERVAL_DURATION = 8000; // 8 seconds
+const SLIDESHOW_INTERVAL_DURATION = 8000; 
 
 function cacheSlideshowImages() {
   const galleryImages = document.querySelectorAll('#showcase-section .showcase-gallery img:not([data-video="true"])');
@@ -121,7 +119,7 @@ function startAutomaticSlideshowTimer() {
 
 function handleManualNavigation(direction) {
     changeSlide(direction);
-    startAutomaticSlideshowTimer(); // Reset the timer
+    startAutomaticSlideshowTimer(); 
 }
 
 function buildFullscreenSlideshow(showcaseSectionElement) {
@@ -129,7 +127,6 @@ function buildFullscreenSlideshow(showcaseSectionElement) {
 
   const slideshowContainer = document.createElement('div');
   slideshowContainer.id = 'fullscreen-slideshow-container';
-  // Note: z-index for slideshowContainer is handled by CSS
 
   fullscreenSlideshowImages.forEach((src, index) => {
     const img = document.createElement('img');
@@ -141,7 +138,6 @@ function buildFullscreenSlideshow(showcaseSectionElement) {
 
   const textOverlay = document.createElement('div');
   textOverlay.id = 'slideshow-text-overlay';
-  // Note: z-index for textOverlay is handled by CSS
   textOverlay.innerHTML = `
     <img src="https://i.imgur.com/47LeW6H.png" alt="CoreFX Mod Logo" id="slideshow-logo">
     <div id="slideshow-text-content">
@@ -156,7 +152,6 @@ function buildFullscreenSlideshow(showcaseSectionElement) {
   prevButton.innerHTML = '❮';
   prevButton.href = '#'; 
   prevButton.onclick = (e) => { e.preventDefault(); handleManualNavigation('prev'); };
-  // Note: z-index for prevButton is handled by CSS
   
   const nextButton = document.createElement('a');
   nextButton.id = 'slideshow-next';
@@ -164,25 +159,22 @@ function buildFullscreenSlideshow(showcaseSectionElement) {
   nextButton.innerHTML = '❯';
   nextButton.href = '#';
   nextButton.onclick = (e) => { e.preventDefault(); handleManualNavigation('next'); };
-  // Note: z-index for nextButton is handled by CSS
 
   showcaseSectionElement.appendChild(slideshowContainer);
   showcaseSectionElement.appendChild(textOverlay);
   showcaseSectionElement.appendChild(prevButton);
   showcaseSectionElement.appendChild(nextButton);
 
-  // Style #showcase-section for full-screen slideshow
-  // These styles are applied directly and override stylesheet defaults for #showcase-section when it's a slideshow
   showcaseSectionElement.style.padding = '0';
   showcaseSectionElement.style.background = 'none'; 
   showcaseSectionElement.style.width = '100vw';
   showcaseSectionElement.style.height = '100vh';
-  showcaseSectionElement.style.display = 'block'; // Ensures it's block, not flex
-  showcaseSectionElement.style.position = 'fixed'; // Cover entire viewport
+  showcaseSectionElement.style.display = 'block';
+  showcaseSectionElement.style.position = 'fixed';
   showcaseSectionElement.style.top = '0';
   showcaseSectionElement.style.left = '0';
-  showcaseSectionElement.style.zIndex = '1000'; // Below nav bar (z-index 1200 for #top-nav)
-  showcaseSectionElement.style.overflow = 'hidden'; // Prevent scrollbars
+  showcaseSectionElement.style.zIndex = '1000';
+  showcaseSectionElement.style.overflow = 'hidden';
 }
 
 function startFullscreenSlideshow() {
@@ -197,7 +189,7 @@ function startFullscreenSlideshow() {
               activeFound = true;
           }
       });
-      if (!activeFound && initialSlides[0]) { // Check if initialSlides[0] exists
+      if (!activeFound && initialSlides[0]) {
           currentSlideIndex = 0;
           initialSlides[0].classList.add('active-slide');
       }
@@ -210,9 +202,8 @@ function stopFullscreenSlideshow(showcaseSectionElement) {
   fullscreenSlideshowInterval = null;
   if (showcaseSectionElement) {
     showcaseSectionElement.innerHTML = ''; 
-    // Reset styles that were applied for fullscreen mode
-    showcaseSectionElement.style.padding = ''; // Resets to stylesheet default
-    showcaseSectionElement.style.background = ''; // Resets to stylesheet default
+    showcaseSectionElement.style.padding = '';
+    showcaseSectionElement.style.background = '';
     showcaseSectionElement.style.width = '';
     showcaseSectionElement.style.height = '';
     showcaseSectionElement.style.position = '';
@@ -220,7 +211,6 @@ function stopFullscreenSlideshow(showcaseSectionElement) {
     showcaseSectionElement.style.left = '';
     showcaseSectionElement.style.zIndex = '';
     showcaseSectionElement.style.overflow = '';
-    // display will be handled by hideAll/show in router
   }
 }
 
@@ -247,21 +237,15 @@ function route(){
   hideAll(['main-section','showcase-section','install-section','faq-section','changelog-section']);
 
   switch(newHash){
-    case 'showcase':{
+    case 'showcase': {
       const s = document.getElementById('showcase-section');
       if (previousHash === 'showcase') {
-          stopFullscreenSlideshow(s); 
+        stopFullscreenSlideshow(s);
       }
       buildFullscreenSlideshow(s);
       startFullscreenSlideshow();
-      
-      s.style.opacity = '0'; 
-      s.style.display = 'block'; 
-      s.classList.add('fade-in');
-      setTimeout(() => {
-          s.classList.remove('fade-in');
-          s.style.opacity = ''; 
-      }, 500);
+      s.style.display = 'block';
+      s.style.opacity = '';
       break;
     }
     case 'installation':
@@ -273,12 +257,10 @@ function route(){
       initChangelog();
       break;
     }
-    default:{ // Home
+    default:{ 
       const m=document.getElementById('main-section');
       if(m && m.innerHTML.trim()==='' && homeTemplate) { m.innerHTML=homeTemplate; }
       else if (m && m.innerHTML.trim()==='' && !homeTemplate) { 
-        // Fallback if homeTemplate somehow wasn't captured (e.g. direct nav to other page on first load very fast)
-        // This could involve fetching a default home structure if necessary, or leaving it to initial HTML.
       }
       show(m);
       if (location.hash !== '#home' && location.hash !== '') location.hash='home'; 
@@ -315,17 +297,20 @@ function showTab(id){
 }
 
 function updateAccentColor(){
-  const maxScroll  = document.documentElement.scrollHeight - innerHeight;
-  const distance   = Math.max(maxScroll, 1000);
-  const t          = Math.min(window.scrollY / distance, 1);
-  const col1 = [10,194,255];
-  const col2 = [30,255,180];
-  const mix  = col1.map((v,i)=>Math.round(v + (col2[i]-v)*t));
-  const accent      = `rgb(${mix[0]},${mix[1]},${mix[2]})`;
-  const accentAlpha = `rgba(${mix[0]},${mix[1]},${mix[2]},1.0)`; 
-  const root = document.documentElement;
-  root.style.setProperty('--accent', accent);
-  root.style.setProperty('--accent-alpha', accentAlpha); 
+  const maxScroll  = document.documentElement.scrollHeight - window.innerHeight;
+  const distance   = Math.max(maxScroll, 1000); // Минимальная дистанция для плавной анимации
+  const t          = Math.min(window.scrollY / distance, 1); // Нормализованный прогресс прокрутки (0 до 1)
+
+  const col1 = [10, 194, 255];  // Голубой цвет (соответствует --accent-blue-static)
+  const col2 = [255, 100, 200];   // Розовый цвет (соответствует --accent-pink-static)
+
+  // Интерполируем каждый компонент цвета
+  const mix  = col1.map((startComponent, i) => Math.round(startComponent + (col2[i] - startComponent) * t));
+
+  const newAnimatedAccentColor = `rgb(${mix[0]},${mix[1]},${mix[2]})`;
+  
+  document.documentElement.style.setProperty('--accent', newAnimatedAccentColor);
+  // CSS автоматически обновит --accent-alpha и --accent-dim на основе нового значения --accent
 }
 window.addEventListener('scroll', updateAccentColor, { passive:true });
 
@@ -343,5 +328,25 @@ window.addEventListener('DOMContentLoaded',()=>{
   route(); 
   
   initChangelog(); 
+  updateAccentColor(); // Установить начальный цвет при загрузке
+
+  // --- React Integration ---
+  // Глобальный футер с использованием React
+  function GlobalSiteFooter() {
+    return React.createElement(
+      'p',
+      { style: { textAlign: 'center', padding: '20px 0', color: '#aaa', borderTop: '1px solid #333', marginTop: '40px', fontSize: '0.9em' } },
+      'CoreFX by Beta. React integrated. Gradient theme active.'
+    );
+  }
+
+  const globalFooterContainer = document.getElementById('react-global-footer');
+  if (globalFooterContainer && typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
+    const reactRoot = ReactDOM.createRoot(globalFooterContainer);
+    reactRoot.render(React.createElement(GlobalSiteFooter));
+  } else if (globalFooterContainer) {
+      globalFooterContainer.innerHTML = '<p style="text-align:center; padding:20px 0; color:#777;">Error: React not loaded.</p>';
+  }
+  // --- End React Integration ---
 });
 window.addEventListener('hashchange',route);
